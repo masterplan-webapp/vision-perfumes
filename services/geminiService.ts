@@ -16,8 +16,8 @@ const getApiKey = () => {
   
   try {
     // Check for standard process.env
-    if (typeof process !== 'undefined' && process.env && process.env.API_KEY) {
-      return process.env.API_KEY;
+    if (typeof process !== 'undefined' && process.env && process.env..VITE_API_KEY) {
+      return process.env.VITE_API_KEY;
     }
   } catch (e) {
     // Ignore error
