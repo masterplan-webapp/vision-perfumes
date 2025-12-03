@@ -2,8 +2,23 @@
 
 import { useState, useCallback } from 'react';
 import { processPayment } from '@/services/pagarmeService';
-import { useCart } from '@/context/CartContext';
-import { useAuth } from '@/context/AuthContext';
+
+// Define gtag type globally
+declare global {
+  interface Window {
+    gtag?: (event: string, name: string, params: any) => void;
+  }
+}
+
+export interface CartItem {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+  selectedVariation?: {
+    price: number;
+  };
+}
 
 export interface CheckoutFormData {
   cardNumber: string;
@@ -35,9 +50,7 @@ const initialState: CheckoutState = {
   boletoUrl: null,
 };
 
-export function useCheckout() {
-  const { items, total, clearCart } = useCart();
-  const { user } = useAuth();
+export function useCheckout(items: CartItem[] = [], total: number = 0, user: any = null) {
   const [state, setState] = useState<CheckoutState>(initialState);
 
   const resetState = useCallback(() => {
@@ -111,12 +124,12 @@ export function useCheckout() {
           }));
 
           // Track purchase event in GA4
-          if (window.gtag) {
+          if (typeof window !== 'undefined' && window.gtag) {
             window.gtag('event', 'purchase', {
               transaction_id: result.transactionId,
               value: total,
               currency: 'BRL',
-              items: items.map((item) => ({
+              items: items.map((item: CartItem) => ({
                 item_id: item.id,
                 item_name: item.name,
                 price: item.selectedVariation?.price || item.price,
@@ -124,8 +137,6 @@ export function useCheckout() {
               })),
             });
           }
-
-          clearCart();
         } else {
           setState((prev) => ({
             ...prev,
@@ -141,7 +152,7 @@ export function useCheckout() {
         }));
       }
     },
-    [items, total, user, clearCart]
+    [items, total, user]
   );
 
   return {
