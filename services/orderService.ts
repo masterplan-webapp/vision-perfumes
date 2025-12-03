@@ -5,6 +5,20 @@ import { Order, CartItem, OrderStatus } from "../types";
 
 const ORDERS_COLLECTION = "orders";
 
+// Helper function to remove undefined values from objects
+const sanitizeObject = (obj: any): any => {
+  if (obj === null || obj === undefined) return null;
+  if (typeof obj !== 'object') return obj;
+  
+  return Object.entries(obj).reduce((acc, [key, value]) => {
+    if (value !== undefined && value !== null) {
+      acc[key] = value;
+    }
+    return acc;
+  }, {} as any);
+};
+
+
 export const createOrder = async (
   userId: string,
   customerName: string,
@@ -46,8 +60,7 @@ export const createOrder = async (
       couponCode: couponCode || null,
       status: 'pending',
       createdAt: new Date().toISOString(),
-      shippingAddress: { ...shippingAddress } // Shallow clone address
-    };
+    shippingAddress: sanitizeObject(shippingAddress)    };
 
     const docRef = await addDoc(collection(db, ORDERS_COLLECTION), orderData);
     return docRef.id;
