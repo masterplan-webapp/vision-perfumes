@@ -62,7 +62,7 @@ export const createOrder = async (
       createdAt: new Date().toISOString(),
     shippingAddress: sanitizeObject(shippingAddress)    };
 
-    const docRef = await addDoc(collection(db, ORDERS_COLLECTION), orderData);
+    const docRef = await addDoc(collection(db, ORDERS_COLLECTION), sanitizeObject(orderData));
     return docRef.id;
   } catch (error) {
     console.error("Error creating order:", error);
