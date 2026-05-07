@@ -58,14 +58,22 @@ const Header: React.FC<HeaderProps> = ({
 
       {/* Main Header */}
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center gap-4 sm:gap-10 h-20 sm:h-24">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-6 py-6 md:h-32">
           {/* Logo */}
-          <a href="#" onClick={(e) => { e.preventDefault(); if(isAdminView) onAdminClick(); else onCategoryClick(''); }} className="flex-shrink-0 flex items-center h-full group">
+          <a href="#" onClick={(e) => { e.preventDefault(); if(isAdminView) onAdminClick(); else onCategoryClick(''); }} className="flex-shrink-0 flex items-center gap-4 group">
             <img 
-              src="/assets/logo-horizontal.png" 
-              alt="Vision Perfumes" 
-              className="h-[50%] sm:h-[65%] w-auto object-contain brightness-110"
+              src="/favicon.png" 
+              alt="Vision Perfumes Icon" 
+              className="h-16 sm:h-20 w-auto object-contain brightness-110 group-hover:scale-105 transition-transform"
             />
+            <div className="flex flex-col">
+              <span className="font-serif text-3xl sm:text-5xl font-medium text-accent-gold tracking-[0.2em] uppercase leading-none">
+                Vision
+              </span>
+              <span className="font-serif text-[10px] sm:text-[12px] font-light text-white/60 tracking-[0.6em] uppercase mt-1 pl-1">
+                Perfumes Importados
+              </span>
+            </div>
           </a>
 
           {/* Desktop Search - Only show if not in Admin View */}
