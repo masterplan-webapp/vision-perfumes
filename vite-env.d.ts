@@ -1,0 +1,10 @@
+
+// Manually declare ImportMeta and ImportMetaEnv since vite/client might be missing
+interface ImportMetaEnv {
+  readonly VITE_API_KEY: string;
+  [key: string]: any;
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}

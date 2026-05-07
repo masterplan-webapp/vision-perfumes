@@ -1,0 +1,7 @@
+{
+  "name": "Vision Perfumes V1.3",
+  "description": "A premium e-commerce experience for imported fragrances, featuring an AI perfume advisor.\n\nVersao full com cupons, frete gratis, cta link\npreparação para Vercel",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
