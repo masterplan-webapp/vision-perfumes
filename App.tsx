@@ -21,7 +21,7 @@ import { fetchProducts } from './services/productService';
 import { getSiteSettings } from './services/settingsService';
 import { getCartFromFirebase, saveCartToFirebase } from './services/cartService';
 import { ToastProvider } from './context/ToastContext';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Shield, Flower2, Sparkles, Gift } from 'lucide-react';
 
 const AppContent: React.FC = () => {
   // State
@@ -257,24 +257,30 @@ const AppContent: React.FC = () => {
 
                 {/* Categories Section (only show on home view) */}
                 {!filters.category && !filters.search && (
-                    <section className="py-16 bg-gray-50">
+                    <section className="py-20 bg-primary-dark">
                         <div className="container mx-auto px-4">
-                            <h2 className="font-serif text-3xl text-center font-bold text-primary mb-12">Categorias</h2>
+                            <h2 className="font-serif text-3xl text-center font-bold text-white mb-12 tracking-widest uppercase">
+                                Explore por Categorias
+                            </h2>
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                                 {[
-                                    { name: 'Masculino', icon: '👔', desc: 'Sofisticação' },
-                                    { name: 'Feminino', icon: '💐', desc: 'Elegância' },
-                                    { name: 'Unissex', icon: '✨', desc: 'Versatilidade' },
-                                    { name: 'Ofertas', icon: '🎁', desc: 'Oportunidades' }
+                                    { name: 'Masculino', icon: Shield, desc: 'Sofisticação' },
+                                    { name: 'Feminino', icon: Flower2, desc: 'Elegância' },
+                                    { name: 'Unissex', icon: Sparkles, desc: 'Versatilidade' },
+                                    { name: 'Ofertas', icon: Gift, desc: 'Oportunidades' }
                                 ].map((cat) => (
                                     <div 
                                         key={cat.name}
                                         onClick={() => { setFilters(prev => ({...prev, category: cat.name})); scrollToProducts(); }}
-                                        className="bg-white p-8 rounded-2xl text-center cursor-pointer hover:-translate-y-2 hover:shadow-lg transition-all border border-transparent hover:border-accent-gold group"
+                                        className="bg-gray-charcoal p-10 rounded-2xl text-center cursor-pointer hover:-translate-y-2 hover:bg-accent-gold/10 transition-all border border-white/5 hover:border-accent-gold group shadow-2xl"
                                     >
-                                        <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">{cat.icon}</div>
-                                        <h3 className="font-serif text-xl font-bold mb-2">{cat.name}</h3>
-                                        <p className="text-sm text-gray-dark">{cat.desc}</p>
+                                        <div className="flex justify-center mb-6">
+                                            <cat.icon size={48} className="text-accent-gold group-hover:scale-110 transition-transform stroke-[1.5]" />
+                                        </div>
+                                        <h3 className="font-serif text-xl font-bold mb-2 text-white">{cat.name}</h3>
+                                        <p className="text-xs text-accent-gold font-bold uppercase tracking-widest opacity-60 group-hover:opacity-100 transition-opacity">
+                                            {cat.desc}
+                                        </p>
                                     </div>
                                 ))}
                             </div>
