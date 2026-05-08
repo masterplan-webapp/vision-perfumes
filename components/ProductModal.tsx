@@ -136,14 +136,16 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onAddToCa
               <div className="flex items-center border border-gray-medium rounded-xl h-12 w-max">
                 <button 
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="px-4 hover:bg-gray-50 h-full rounded-l-xl transition-colors"
+                  className="px-4 hover:bg-gray-50 h-full rounded-l-xl transition-colors text-gray-900"
+                  aria-label="Diminuir quantidade"
                 >
                   <Minus size={18} />
                 </button>
-                <span className="w-12 text-center font-bold">{quantity}</span>
+                <span className="w-12 text-center font-bold text-gray-900">{quantity}</span>
                 <button 
                   onClick={() => setQuantity(quantity + 1)}
-                  className="px-4 hover:bg-gray-50 h-full rounded-r-xl transition-colors"
+                  className="px-4 hover:bg-gray-50 h-full rounded-r-xl transition-colors text-gray-900"
+                  aria-label="Aumentar quantidade"
                 >
                   <Plus size={18} />
                 </button>

@@ -2,6 +2,33 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Global text color resets to prevent white-on-white issues in modals/light areas */
+@layer base {
+  /* Force form elements inside light-background containers to have dark text */
+  .bg-white input,
+  .bg-white select,
+  .bg-white textarea,
+  .bg-gray-50 input,
+  .bg-gray-50 select,
+  .bg-gray-50 textarea,
+  .bg-gray-100 input,
+  .bg-gray-100 select,
+  .bg-gray-100 textarea {
+    color: #1a1a1a !important;
+  }
+  .bg-white input::placeholder,
+  .bg-gray-50 input::placeholder,
+  .bg-gray-100 input::placeholder {
+    color: #9ca3af !important;
+  }
+
+  /* Ensure icon buttons inside light containers are visible */
+  .bg-white button svg,
+  .bg-gray-50 button svg {
+    color: inherit;
+  }
+}
+
 /* Smooth scrolling */
 html { scroll-behavior: smooth; }
 
