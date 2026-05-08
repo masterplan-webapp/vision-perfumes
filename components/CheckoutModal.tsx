@@ -474,11 +474,11 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, cartItem
               {/* Order Summary with Coupon */}
               <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
                 <div className="flex justify-between mb-2 text-sm">
-                   <span>Subtotal</span>
-                   <span>R$ {subtotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                   <span className="text-gray-600">Subtotal</span>
+                   <span className="text-gray-900">R$ {subtotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
                 </div>
                 <div className="flex justify-between mb-2 text-sm">
-                   <span>Frete ({selectedShipping?.name})</span>
+                   <span className="text-gray-600">Frete ({selectedShipping?.name})</span>
                    <span className={`font-medium ${shippingCost === 0 ? 'text-green-600 font-bold' : 'text-primary'}`}>
                        {shippingCost === 0 ? 'GRÁTIS' : `R$ ${shippingCost.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
                    </span>
@@ -517,7 +517,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, cartItem
                 </div>
 
                 <div className="flex justify-between font-bold text-lg pt-3 border-t border-gray-200 mt-2">
-                   <span>Total Final</span>
+                   <span className="text-gray-900">Total Final</span>
                    <span className="text-accent-gold">R$ {finalTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
                 </div>
               </div>
