@@ -189,7 +189,13 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, cartItem
         appliedCoupon?.code,
         address,
         document,
-        phone
+        phone,
+        selectedShipping ? {
+          option: selectedShipping.name,
+          cost: selectedShipping.price,
+          carrier: selectedShipping.carrier,
+          serviceCode: selectedShipping.serviceCode || ''
+        } : undefined
       );
 
       // 1b. Save Pagar.me Order ID for webhook reconciliation

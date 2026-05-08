@@ -16,7 +16,13 @@ export const createOrder = async (
   couponCode: string | undefined,
   shippingAddress: Order['shippingAddress'],
   customerDocument: string,
-  customerPhone: string
+  customerPhone: string,
+  shippingDetails?: {
+    option: string;
+    cost: number;
+    carrier: string;
+    serviceCode: string;
+  }
 ): Promise<string> => {
   try {
     // Explicitly map items to ensure no circular references or DOM nodes are passed
@@ -27,6 +33,8 @@ export const createOrder = async (
       price: item.price,
       quantity: item.quantity,
       image: item.image,
+      weight: item.selectedVariation?.weight || item.weight || 0.3, // fallback para 300g se não houver
+      dimensions: item.selectedVariation?.dimensions || item.dimensions || { width: 15, height: 10, depth: 15 }, // fallback standard
       selectedVariation: item.selectedVariation ? {
         id: item.selectedVariation.id,
         size: item.selectedVariation.size
@@ -46,7 +54,11 @@ export const createOrder = async (
       couponCode: couponCode || null,
       status: 'pending',
       createdAt: new Date().toISOString(),
-      shippingAddress: { ...shippingAddress } // Shallow clone address
+      shippingAddress: { ...shippingAddress }, // Shallow clone address
+      shippingOption: shippingDetails?.option || null,
+      shippingCost: shippingDetails?.cost || 0,
+      shippingCarrier: shippingDetails?.carrier || null,
+      shippingServiceCode: shippingDetails?.serviceCode || null
     };
 
     const docRef = await addDoc(collection(db, ORDERS_COLLECTION), orderData);
