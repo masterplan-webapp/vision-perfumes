@@ -175,10 +175,26 @@ const Header: React.FC<HeaderProps> = ({
         </div>
       </div>
 
-      {/* Navigation */}
+      {/* Navigation & Mobile Search */}
       {!isAdminView && (
         <nav className={`border-t border-white/5 transition-all duration-300 ${isMenuOpen ? 'block bg-primary' : 'hidden md:block'}`}>
             <div className="container mx-auto px-4">
+            {/* Mobile Search Bar */}
+            <div className="md:hidden py-4">
+                <form onSubmit={handleSearch} className="relative w-full">
+                    <input
+                        type="text"
+                        placeholder="O que você está procurando hoje?"
+                        className="w-full py-2.5 px-6 pr-14 bg-white/5 border border-white/20 rounded-lg text-sm text-white placeholder:text-white/40 focus:outline-none focus:border-accent-gold transition-all"
+                        value={searchVal}
+                        onChange={(e) => setSearchVal(e.target.value)}
+                    />
+                    <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-accent-gold">
+                        <Search size={20} />
+                    </button>
+                </form>
+            </div>
+
             <ul className="flex flex-col md:flex-row justify-center gap-8 py-3 text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.15em]">
                 {['Perfumes', 'Masculino', 'Feminino', 'Unissex', 'Marcas', 'Ofertas'].map((item) => (
                 <li key={item}>
