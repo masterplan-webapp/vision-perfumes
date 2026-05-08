@@ -4,7 +4,7 @@ import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDHZpR1Rs6e-LHIyUA7Nye4McC366kMe_U",
+  apiKey: import.meta.env.VITE_API_KEY || "AIzaSyDHZpR1Rs6e-LHIyUA7Nye4McC366kMe_U", // Fallback to old key if env is missing
   authDomain: "vision-perfumes.firebaseapp.com",
   projectId: "vision-perfumes",
   storageBucket: "vision-perfumes.firebasestorage.app",
