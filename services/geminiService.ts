@@ -3,24 +3,14 @@ import { PRODUCTS } from '../constants';
 
 // Safe access for both Vite (import.meta.env) and standard (process.env) environments
 const getApiKey = () => {
-  try {
-    // Check for Vite environment
-    // Cast to any to avoid TypeScript errors if types are missing
-    const meta = import.meta as any;
-    if (typeof meta !== 'undefined' && meta.env && meta.env.VITE_API_KEY) {
-      return meta.env.VITE_API_KEY;
-    }
-  } catch (e) {
-    // Ignore error if import.meta is not supported
+  // Vite standard access
+  if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_KEY) {
+    return import.meta.env.VITE_API_KEY;
   }
   
-  try {
-    // Check for standard process.env
-    if (typeof process !== 'undefined' && process.env && process.env.API_KEY) {
-      return process.env.API_KEY;
-    }
-  } catch (e) {
-    // Ignore error
+  // Node.js fallback
+  if (typeof process !== 'undefined' && process.env && (process.env.VITE_API_KEY || process.env.API_KEY)) {
+    return process.env.VITE_API_KEY || process.env.API_KEY;
   }
   
   return "";
@@ -54,7 +44,7 @@ export const getPerfumeRecommendation = async (query: string): Promise<string> =
   try {
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
-      contents: prompt,
+      contents: [{ role: 'user', parts: [{ text: prompt }] }],
       config: {
         thinkingConfig: { thinkingBudget: 0 } // Disable thinking for faster response
       }

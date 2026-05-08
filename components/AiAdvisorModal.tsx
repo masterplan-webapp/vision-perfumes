@@ -84,7 +84,7 @@ const AiAdvisorModal: React.FC<AiAdvisorModalProps> = ({ isOpen, onClose }) => {
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     placeholder="Qual é a ocasião ou preferência?"
-                    className="w-full py-3 pl-4 pr-12 bg-gray-100 border-transparent focus:bg-white border focus:border-indigo-500 rounded-xl focus:ring-0 transition-all"
+                    className="w-full py-3 pl-4 pr-12 bg-gray-100 text-gray-900 border-transparent focus:bg-white border focus:border-indigo-500 rounded-xl focus:ring-0 transition-all"
                     disabled={isLoading}
                 />
                 <button 
