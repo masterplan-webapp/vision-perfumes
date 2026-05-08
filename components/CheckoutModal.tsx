@@ -141,7 +141,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, cartItem
 
   const handleCreateOrder = async () => {
     // Validate Card if selected
-    if (paymentMethod === 'credit_card') {
+    if (paymentMethod === 'credit_card' && finalTotal > 0) {
         if (!cardNumber || !cardExpiry || !cardCvv || !cardName) {
             addToast("Preencha todos os dados do cartão.", "error");
             return;
