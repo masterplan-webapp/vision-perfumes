@@ -466,11 +466,61 @@ const formatCurrency = (val) =>
   new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
 
 const getEmailStyles = () => `
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  color: #333;
+  font-family: 'Playfair Display', serif, Arial, sans-serif;
+  color: #1a1a1a;
   line-height: 1.6;
   max-width: 600px;
   margin: 0 auto;
+  background-color: #ffffff;
+`;
+
+const getBaseEmailTemplate = (content) => `
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+      <style>
+        body { margin: 0; padding: 0; background-color: #f4f4f4; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+        .wrapper { width: 100%; table-layout: fixed; background-color: #f4f4f4; padding-bottom: 40px; }
+        .main-table { border-spacing: 0; margin: 0 auto; width: 100%; max-width: 600px; background-color: #ffffff; font-family: 'Inter', sans-serif; }
+        .header { background-color: #121212; padding: 40px 20px; text-align: center; }
+        .content { padding: 40px 30px; }
+        .footer { background-color: #121212; padding: 30px; text-align: center; color: #ffffff; font-size: 12px; }
+        .button { background-color: #d4af37; color: #ffffff !important; padding: 15px 30px; text-decoration: none; border-radius: 4px; display: inline-block; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+        .h1 { font-family: 'Playfair Display', serif; color: #d4af37; font-size: 28px; margin-bottom: 20px; }
+        .h2 { font-family: 'Playfair Display', serif; color: #121212; font-size: 22px; margin-bottom: 15px; border-bottom: 2px solid #d4af37; display: inline-block; padding-bottom: 5px; }
+        .order-box { background-color: #f9f9f9; border: 1px solid #eeeeee; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .item-row { border-bottom: 1px solid #eeeeee; padding: 12px 0; display: flex; justify-content: space-between; }
+        .total-row { padding-top: 15px; font-size: 18px; font-weight: bold; text-align: right; color: #121212; }
+      </style>
+    </head>
+    <body>
+      <div class="wrapper">
+        <table class="main-table">
+          <tr>
+            <td class="header">
+              <img src="https://visionperfumes.com.br/assets/logo-horizontal.png" alt="Vision Perfumes" width="280" style="display: block; margin: 0 auto; filter: brightness(0) invert(1);"/>
+            </td>
+          </tr>
+          <tr>
+            <td class="content">
+              ${content}
+            </td>
+          </tr>
+          <tr>
+            <td class="footer">
+              <p style="margin-bottom: 10px; font-weight: bold; letter-spacing: 2px;">VISION PERFUMES</p>
+              <p style="opacity: 0.7;">Elegância em cada nota.</p>
+              <div style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
+                <a href="https://visionperfumes.com.br" style="color: #d4af37; text-decoration: none; margin: 0 10px;">Loja</a>
+                <a href="https://visionperfumes.com.br/minha-conta" style="color: #d4af37; text-decoration: none; margin: 0 10px;">Minha Conta</a>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </body>
+  </html>
 `;
 
 /**
@@ -489,34 +539,39 @@ exports.onOrderCreated = onDocumentCreated(
 
     console.log(`[Email] Enviando confirmação de pedido: ${orderId}`);
 
-    const itemsList = order.items.map(item => `
-      <div style="border-bottom: 1px solid #eee; padding: 10px 0;">
-        <strong>${item.name}</strong> ${item.selectedVariation ? `(${item.selectedVariation.size})` : ''}<br/>
-        Qtd: ${item.quantity} x ${formatCurrency(item.price)}
-      </div>
-    `).join('');
-
-    const html = `
-      <div style="${getEmailStyles()}">
-        <div style="text-align: center; margin-bottom: 30px;">
-          <img src="https://visionperfumes.com.br/assets/logo-horizontal.png" alt="Vision Perfumes" style="height: 60px; width: auto;"/>
-        </div>
-        <h2 style="color: #d4af37;">Obrigado pelo seu pedido, ${order.customerName}!</h2>
-        <p>Recebemos seu pedido <strong>#${orderId.slice(0, 8)}</strong> e ele já está registrado.</p>
-        
-        <h3>Resumo do Pedido</h3>
-        <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #eee;">
-          ${itemsList}
-          <div style="margin-top: 15px; text-align: right; font-size: 18px;">
-            <strong>Total: ${formatCurrency(order.total)}</strong>
+    const content = `
+      <h1 class="h1">Pedido Recebido com Sucesso!</h1>
+      <p>Olá, <strong>${order.customerName}</strong>. Agradecemos por escolher a Vision Perfumes.</p>
+      <p>Recebemos seu pedido <strong>#${orderId.slice(0, 8)}</strong> e ele já está em nosso sistema. Agora só falta a confirmação do pagamento para iniciarmos a preparação do seu envio.</p>
+      
+      <h2 class="h2">Detalhes do Pedido</h2>
+      <div class="order-box">
+        ${order.items.map(item => `
+          <div class="item-row">
+            <span><strong>${item.quantity}x</strong> ${item.name} ${item.selectedVariation ? `<small style="color: #666">(${item.selectedVariation.size})</small>` : ''}</span>
+            <span>${formatCurrency(item.price * item.quantity)}</span>
           </div>
+        `).join('')}
+        <div class="total-row">
+          Total: ${formatCurrency(order.total)}
         </div>
+      </div>
 
-        <p>Assim que o pagamento for confirmado, iniciaremos o processo de envio.</p>
-        <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;"/>
-        <p style="font-size: 12px; color: #999;">Vision Perfumes — Elegância em cada nota.</p>
+      <div style="margin-top: 30px;">
+        <h2 class="h2">Endereço de Entrega</h2>
+        <p style="font-size: 14px; color: #555;">
+          ${order.shippingAddress.street}, ${order.shippingAddress.number} ${order.shippingAddress.complement ? `- ${order.shippingAddress.complement}` : ''}<br>
+          ${order.shippingAddress.neighborhood} - ${order.shippingAddress.city}/${order.shippingAddress.state}<br>
+          CEP: ${order.shippingAddress.zip}
+        </p>
+      </div>
+
+      <div style="text-align: center; margin-top: 40px;">
+        <a href="https://visionperfumes.com.br/minha-conta" class="button">Acompanhar Pedido</a>
       </div>
     `;
+
+    const html = getBaseEmailTemplate(content);
 
     try {
       await resend.emails.send({
@@ -557,50 +612,56 @@ exports.onOrderUpdated = onDocumentUpdated(
     if (beforeStatus === afterStatus) return;
 
     const resend = new Resend(resendApiKey.value());
-    let subject = `Atualização do seu pedido #${orderId.slice(0, 8)}`;
-    let messageBody = "";
-    let showTracking = false;
+    let statusTitle = "Atualização de Pedido";
+    let buttonText = "Ver Detalhes";
+    let buttonUrl = "https://visionperfumes.com.br/minha-conta";
 
     switch (afterStatus) {
       case 'processing':
         subject = `Pagamento Confirmado! 🎉 #${orderId.slice(0, 8)}`;
-        messageBody = "Ótimas notícias! Seu pagamento foi confirmado. Já estamos separando suas fragrâncias com todo carinho.";
+        statusTitle = "Pagamento Confirmado!";
+        messageBody = "Ótimas notícias! Seu pagamento foi processado com sucesso. Nossa equipe já está separando suas fragrâncias com o máximo cuidado.";
         break;
       case 'shipped':
         subject = `Seu pedido está a caminho! 🚚 #${orderId.slice(0, 8)}`;
-        messageBody = "Seu pedido foi coletado pela transportadora e já está a caminho.";
+        statusTitle = "Pedido Enviado!";
+        messageBody = "Seu pedido foi coletado pela transportadora e já está a caminho da sua residência.";
         showTracking = true;
+        buttonText = "Rastrear Entrega";
+        buttonUrl = `https://melhorrastreio.com.br/rastreio/${order.trackingCode}`;
         break;
       case 'delivered':
         subject = `Pedido Entregue — Vision Perfumes`;
-        messageBody = "Seu pedido foi entregue! Esperamos que a experiência seja incrível.";
+        statusTitle = "Entregue!";
+        messageBody = "Seu pedido acaba de ser entregue. Esperamos que a sua nova fragrância traga momentos inesquecíveis!";
         break;
       case 'cancelled':
         subject = `Pedido Cancelado #${orderId.slice(0, 8)}`;
-        messageBody = "Infelizmente seu pedido foi cancelado. Se houver dúvidas, responda a este e-mail.";
+        statusTitle = "Pedido Cancelado";
+        messageBody = "Lamentamos informar que seu pedido foi cancelado. Se você já realizou o pagamento, o estorno será processado automaticamente.";
         break;
       default:
         return;
     }
 
-    const html = `
-      <div style="${getEmailStyles()}">
-        <div style="text-align: center; margin-bottom: 30px;">
-          <img src="https://visionperfumes.com.br/assets/logo-horizontal.png" alt="Vision Perfumes" style="height: 60px; width: auto;"/>
+    const content = `
+      <h1 class="h1">${statusTitle}</h1>
+      <p>Olá, <strong>${order.customerName}</strong>.</p>
+      <p>${messageBody}</p>
+      
+      ${showTracking && order.trackingCode ? `
+        <div class="order-box" style="text-align: center;">
+          <p style="margin: 0; font-size: 14px; color: #666;">CÓDIGO DE RASTREIO</p>
+          <p style="font-size: 24px; font-weight: bold; color: #121212; margin: 10px 0;">${order.trackingCode}</p>
         </div>
-        <h2 style="color: #d4af37;">Olá, ${order.customerName}</h2>
-        <p>${messageBody}</p>
-        
-        ${showTracking && order.trackingCode ? `
-          <div style="background: #f0f7ff; padding: 15px; border-radius: 8px; margin: 20px 0; border: 1px solid #cce3ff;">
-            <strong>Código de Rastreio:</strong> ${order.trackingCode}<br/>
-            <a href="https://melhorrastreio.com.br/rastreio/${order.trackingCode}" style="color: #0066cc; font-weight: bold;">Acompanhar Entrega</a>
-          </div>
-        ` : ''}
+      ` : ''}
 
-        <p>Atenciosamente,<br/><strong>Equipe Vision Perfumes</strong></p>
+      <div style="text-align: center; margin-top: 40px;">
+        <a href="${buttonUrl}" class="button">${buttonText}</a>
       </div>
     `;
+
+    const html = getBaseEmailTemplate(content);
 
     try {
       await resend.emails.send({
@@ -611,6 +672,52 @@ exports.onOrderUpdated = onDocumentUpdated(
       });
     } catch (error) {
       console.error("[Email] Erro ao enviar email de atualização:", error);
+    }
+  }
+);
+/**
+ * Trigger: Boas-vindas para novos usuários (Via Firestore)
+ */
+exports.onUserDocumentCreated = onDocumentCreated(
+  {
+    document: "users/{userId}",
+    secrets: [resendApiKey],
+    region: "us-central1"
+  },
+  async (event) => {
+    const user = event.data.data();
+    const resend = new Resend(resendApiKey.value());
+
+    if (!user.email) return;
+
+    console.log(`[Email] Enviando boas-vindas para: ${user.email}`);
+
+    const content = `
+      <h1 class="h1">Bem-vindo à Vision Perfumes</h1>
+      <p>Olá, <strong>${user.name || ''}</strong>. Ficamos muito felizes em ter você conosco!</p>
+      <p>A Vision Perfumes nasceu para oferecer não apenas fragrâncias, mas uma experiência sensorial única através dos melhores perfumes importados do mundo.</p>
+      <p>Agora você tem acesso a:</p>
+      <ul style="color: #555;">
+        <li>Lançamentos exclusivos em primeira mão</li>
+        <li>Histórico de pedidos simplificado</li>
+        <li>Curadoria personalizada de fragrâncias</li>
+      </ul>
+      <div style="text-align: center; margin-top: 40px;">
+        <a href="https://visionperfumes.com.br" class="button">Explorar Catálogo</a>
+      </div>
+    `;
+
+    const html = getBaseEmailTemplate(content);
+
+    try {
+      await resend.emails.send({
+        from: 'Vision Perfumes <contato@visionperfumes.com.br>',
+        to: [user.email],
+        subject: 'Bem-vindo à Vision Perfumes — Elegância em cada nota',
+        html: html,
+      });
+    } catch (error) {
+      console.error("[Email] Erro ao enviar email de boas-vindas:", error);
     }
   }
 );
