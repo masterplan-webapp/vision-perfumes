@@ -28,11 +28,11 @@ const DEFAULT_SLIDES: HeroSlide[] = [
 const DEFAULT_SETTINGS: SiteSettings = {
   topBarText: "✨ Frete Grátis para compras acima de R$ 300 | Até 3x sem juros no cartão",
   slides: DEFAULT_SLIDES,
-  originZip: "01001-000", // Default generic SP zip
-  frenetToken: "AB341B5DR56D1R438AR905ER61598F036D68", // Token fornecido
-  pagarmePublicKey: "pk_test_2m13QQ4h4sV23ALb", // Chave Pagar.me TESTE
-  apiBaseUrl: "https://us-central1-vision-perfumes.cloudfunctions.net", // Cloud Functions URL
-  freeShippingThreshold: 300 // Padrão R$ 300,00
+  originZip: "01001-000",
+  frenetToken: "AB341B5DR56D1R438AR905ER61598F036D68",
+  pagarmePublicKey: "pk_test_2m13QQ4h4sV23ALb",
+  apiBaseUrl: "https://us-central1-vision-perfumes.cloudfunctions.net", // Firebase Functions v2
+  freeShippingThreshold: 300
 };
 
 export const getSiteSettings = async (): Promise<SiteSettings> => {
@@ -104,6 +104,13 @@ export const getSiteSettings = async (): Promise<SiteSettings> => {
     }
   } catch (e) {
     console.warn("Error reading settings from localStorage", e);
+  }
+
+  // 3. Auto-correct stale API URLs (old Cloud Run URLs → current Firebase Functions URL)
+  const CORRECT_API_URL = "https://us-central1-vision-perfumes.cloudfunctions.net";
+  if (settings.apiBaseUrl && settings.apiBaseUrl.includes('.a.run.app')) {
+    console.warn(`[Settings] Stale apiBaseUrl detected: ${settings.apiBaseUrl}. Correcting to ${CORRECT_API_URL}`);
+    settings.apiBaseUrl = CORRECT_API_URL;
   }
 
   return settings;
