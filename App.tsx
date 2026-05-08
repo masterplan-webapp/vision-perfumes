@@ -291,7 +291,7 @@ const AppContent: React.FC = () => {
                 {/* Products Section */}
                 <section id="products" className="py-16 container mx-auto px-4">
                 <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-6">
-                    <h2 className="font-serif text-3xl font-bold text-primary">
+                    <h2 className="font-serif text-3xl font-bold text-white">
                         {filters.category ? `${filters.category}` : 'Nossos Produtos'}
                         {filters.search && <span className="text-base font-sans font-normal text-gray-500 ml-3">Resultados para "{filters.search}"</span>}
                     </h2>
@@ -299,36 +299,36 @@ const AppContent: React.FC = () => {
                     {/* Filter Controls */}
                     <div className="flex flex-wrap gap-3">
                     <select 
-                        className="px-4 py-2 border border-gray-medium rounded-lg text-sm focus:border-accent-gold focus:outline-none bg-white"
+                        className="px-4 py-2 bg-gray-charcoal border border-white/10 rounded-lg text-sm text-white focus:border-accent-gold focus:outline-none appearance-none cursor-pointer"
                         onChange={(e) => setFilters(prev => ({...prev, brand: e.target.value}))}
                         value={filters.brand}
                     >
-                        <option value="">Todas as Marcas</option>
-                        {BRANDS.map(b => <option key={b} value={b}>{b}</option>)}
+                        <option value="" className="bg-gray-charcoal">Todas as Marcas</option>
+                        {BRANDS.map(b => <option key={b} value={b} className="bg-gray-charcoal">{b}</option>)}
                     </select>
 
                     <select 
-                        className="px-4 py-2 border border-gray-medium rounded-lg text-sm focus:border-accent-gold focus:outline-none bg-white"
+                        className="px-4 py-2 bg-gray-charcoal border border-white/10 rounded-lg text-sm text-white focus:border-accent-gold focus:outline-none appearance-none cursor-pointer"
                         onChange={(e) => setFilters(prev => ({...prev, priceRange: e.target.value}))}
                         value={filters.priceRange}
                     >
-                        <option value="">Todos os Preços</option>
-                        <option value="0-300">Até R$ 300</option>
-                        <option value="300-500">R$ 300 - R$ 500</option>
-                        <option value="500-1000">R$ 500 - R$ 1000</option>
-                        <option value="1000+">Acima de R$ 1000</option>
+                        <option value="" className="bg-gray-charcoal">Todos os Preços</option>
+                        <option value="0-300" className="bg-gray-charcoal">Até R$ 300</option>
+                        <option value="300-500" className="bg-gray-charcoal">R$ 300 - R$ 500</option>
+                        <option value="500-1000" className="bg-gray-charcoal">R$ 500 - R$ 1000</option>
+                        <option value="1000+" className="bg-gray-charcoal">Acima de R$ 1000</option>
                     </select>
 
                     <select 
-                        className="px-4 py-2 border border-gray-medium rounded-lg text-sm focus:border-accent-gold focus:outline-none bg-white"
+                        className="px-4 py-2 bg-gray-charcoal border border-white/10 rounded-lg text-sm text-white focus:border-accent-gold focus:outline-none appearance-none cursor-pointer"
                         onChange={(e) => setFilters(prev => ({...prev, sort: e.target.value}))}
                         value={filters.sort}
                     >
-                        <option value="">Ordenar por</option>
-                        <option value="price-asc">Menor Preço</option>
-                        <option value="price-desc">Maior Preço</option>
-                        <option value="name">Nome A-Z</option>
-                        <option value="rating">Mais Avaliados</option>
+                        <option value="" className="bg-gray-charcoal">Ordenar por</option>
+                        <option value="price-asc" className="bg-gray-charcoal">Menor Preço</option>
+                        <option value="price-desc" className="bg-gray-charcoal">Maior Preço</option>
+                        <option value="name" className="bg-gray-charcoal">Nome A-Z</option>
+                        <option value="rating" className="bg-gray-charcoal">Mais Avaliados</option>
                     </select>
                     
                     {(filters.brand || filters.priceRange || filters.category || filters.search) && (
