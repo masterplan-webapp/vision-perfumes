@@ -467,6 +467,12 @@ const AppContent: React.FC = () => {
       <AiAdvisorModal 
         isOpen={isAiOpen}
         onClose={() => setIsAiOpen(false)}
+        products={products}
+        onAddToCart={(p) => handleAddToCart(p)}
+        onViewProduct={(productId) => {
+          const product = products.find(p => p.id === productId);
+          if (product) setSelectedProduct(product);
+        }}
       />
 
       <AuthModal 

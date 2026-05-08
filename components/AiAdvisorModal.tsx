@@ -1,16 +1,20 @@
 
 import React, { useState } from 'react';
-import { X, Sparkles, Send } from 'lucide-react';
-import { getPerfumeRecommendation } from '../services/geminiService';
+import { X, Sparkles, Send, ShoppingCart, ExternalLink } from 'lucide-react';
+import { getPerfumeRecommendation, AiRecommendationResult } from '../services/geminiService';
+import { Product } from '../types';
 
 interface AiAdvisorModalProps {
   isOpen: boolean;
   onClose: () => void;
+  products: Product[];
+  onAddToCart?: (product: Product) => void;
+  onViewProduct?: (productId: string) => void;
 }
 
-const AiAdvisorModal: React.FC<AiAdvisorModalProps> = ({ isOpen, onClose }) => {
+const AiAdvisorModal: React.FC<AiAdvisorModalProps> = ({ isOpen, onClose, products, onAddToCart, onViewProduct }) => {
   const [query, setQuery] = useState('');
-  const [response, setResponse] = useState('');
+  const [result, setResult] = useState<AiRecommendationResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -18,12 +22,16 @@ const AiAdvisorModal: React.FC<AiAdvisorModalProps> = ({ isOpen, onClose }) => {
     if (!query.trim()) return;
 
     setIsLoading(true);
-    setResponse('');
+    setResult(null);
     
-    const result = await getPerfumeRecommendation(query);
+    const aiResult = await getPerfumeRecommendation(query, products);
     
-    setResponse(result);
+    setResult(aiResult);
     setIsLoading(false);
+  };
+
+  const getProductById = (id: string): Product | undefined => {
+    return products.find(p => p.id === id);
   };
 
   if (!isOpen) return null;
@@ -43,14 +51,14 @@ const AiAdvisorModal: React.FC<AiAdvisorModalProps> = ({ isOpen, onClose }) => {
                 <p className="text-white/80 text-xs">Seu consultor de fragrâncias pessoal</p>
             </div>
           </div>
-          <button onClick={onClose} className="hover:bg-white/20 p-2 rounded-full transition-colors">
+          <button onClick={onClose} className="hover:bg-white/20 p-2 rounded-full transition-colors" aria-label="Fechar consultor">
             <X size={20} />
           </button>
         </div>
 
         {/* Content */}
         <div className="p-6 flex-1 overflow-y-auto bg-gray-50">
-           {!response && !isLoading && (
+           {!result && !isLoading && (
                <div className="text-center text-gray-500 py-8">
                    <p className="mb-4">Olá! Estou aqui para ajudar você a encontrar o perfume perfeito.</p>
                    <p className="text-sm">Experimente perguntar:</p>
@@ -69,9 +77,68 @@ const AiAdvisorModal: React.FC<AiAdvisorModalProps> = ({ isOpen, onClose }) => {
                </div>
            )}
 
-           {response && (
-               <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 prose prose-sm max-w-none text-gray-700">
-                   <div className="whitespace-pre-line">{response}</div>
+           {result && (
+               <div className="space-y-4">
+                 {/* AI Text Response */}
+                 <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 text-gray-700">
+                     <div className="whitespace-pre-line text-sm leading-relaxed">{result.message}</div>
+                 </div>
+
+                 {/* Product Cards */}
+                 {result.recommendations.length > 0 && (
+                   <div className="space-y-3">
+                     <p className="text-xs font-semibold text-indigo-600 uppercase tracking-wider">Produtos sugeridos do nosso catálogo:</p>
+                     {result.recommendations.map(rec => {
+                       const product = getProductById(rec.productId);
+                       if (!product) return null;
+                       return (
+                         <div key={product.id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex items-center gap-3 p-3 hover:shadow-md transition-shadow">
+                           {/* Product Image */}
+                           <img
+                             src={product.image}
+                             alt={product.name}
+                             className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
+                             onError={(e) => { (e.target as HTMLImageElement).src = 'https://placehold.co/64x64/e2e8f0/94a3b8?text=VP'; }}
+                           />
+                           {/* Product Info */}
+                           <div className="flex-1 min-w-0">
+                             <h4 className="font-semibold text-gray-900 text-sm truncate">{product.name}</h4>
+                             <p className="text-xs text-gray-500">{product.brand} · {product.category}</p>
+                             <div className="flex items-center gap-2 mt-1">
+                               <span className="text-indigo-600 font-bold text-sm">R$ {product.price.toFixed(2)}</span>
+                               {product.oldPrice && (
+                                 <span className="text-gray-400 line-through text-xs">R$ {product.oldPrice.toFixed(2)}</span>
+                               )}
+                             </div>
+                           </div>
+                           {/* Action Buttons */}
+                           <div className="flex flex-col gap-1.5 flex-shrink-0">
+                             {onViewProduct && (
+                               <button
+                                 onClick={() => { onViewProduct(product.id); onClose(); }}
+                                 className="flex items-center gap-1 text-xs bg-indigo-600 text-white px-3 py-1.5 rounded-lg hover:bg-indigo-700 transition-colors"
+                                 aria-label={`Ver detalhes de ${product.name}`}
+                               >
+                                 <ExternalLink size={12} />
+                                 Ver
+                               </button>
+                             )}
+                             {onAddToCart && (
+                               <button
+                                 onClick={() => onAddToCart(product)}
+                                 className="flex items-center gap-1 text-xs bg-amber-500 text-white px-3 py-1.5 rounded-lg hover:bg-amber-600 transition-colors"
+                                 aria-label={`Adicionar ${product.name} ao carrinho`}
+                               >
+                                 <ShoppingCart size={12} />
+                                 Comprar
+                               </button>
+                             )}
+                           </div>
+                         </div>
+                       );
+                     })}
+                   </div>
+                 )}
                </div>
            )}
         </div>
@@ -86,11 +153,14 @@ const AiAdvisorModal: React.FC<AiAdvisorModalProps> = ({ isOpen, onClose }) => {
                     placeholder="Qual é a ocasião ou preferência?"
                     className="w-full py-3 pl-4 pr-12 bg-gray-100 text-gray-900 border-transparent focus:bg-white border focus:border-indigo-500 rounded-xl focus:ring-0 transition-all"
                     disabled={isLoading}
+                    id="ai-advisor-input"
+                    aria-label="Campo de busca do consultor de fragrâncias"
                 />
                 <button 
                     type="submit" 
                     disabled={!query.trim() || isLoading}
                     className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    aria-label="Enviar pergunta"
                 >
                     <Send size={18} />
                 </button>

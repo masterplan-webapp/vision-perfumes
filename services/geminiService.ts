@@ -1,58 +1,95 @@
 import { GoogleGenAI } from "@google/genai";
-import { PRODUCTS } from '../constants';
+import { Product } from '../types';
 
-// Safe access for both Vite (import.meta.env) and standard (process.env) environments
 const getApiKey = () => {
-  // Vite standard access
   if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_KEY) {
     return import.meta.env.VITE_API_KEY;
   }
-  
-  // Node.js fallback
   if (typeof process !== 'undefined' && process.env && (process.env.VITE_API_KEY || process.env.API_KEY)) {
     return process.env.VITE_API_KEY || process.env.API_KEY;
   }
-  
   return "";
 };
 
 const apiKey = getApiKey();
-
 const ai = new GoogleGenAI({ apiKey });
 
-export const getPerfumeRecommendation = async (query: string): Promise<string> => {
+export interface RecommendedProduct {
+  productId: string;
+  reason: string;
+}
+
+export interface AiRecommendationResult {
+  message: string;
+  recommendations: RecommendedProduct[];
+}
+
+export const getPerfumeRecommendation = async (
+  query: string,
+  products: Product[]
+): Promise<AiRecommendationResult> => {
   if (!apiKey) {
-    return "Por favor, configure a chave de API do Gemini (VITE_API_KEY) para usar este recurso.";
+    return {
+      message: "Por favor, configure a chave de API do Gemini (VITE_API_KEY) para usar este recurso.",
+      recommendations: []
+    };
   }
 
-  // Create a context string with available products
-  const productList = PRODUCTS.map(p => `- ${p.name} (${p.brand}): ${p.category}, ${p.description}`).join('\n');
+  // Build a concise catalog for the AI (id, name, brand, category, price, description)
+  const productList = products.map(p =>
+    `[ID:${p.id}] ${p.name} | ${p.brand} | ${p.category} | R$${p.price.toFixed(2)} | ${p.description?.substring(0, 120) || 'Sem descrição'}`
+  ).join('\n');
 
-  const prompt = `
-    Você é um especialista em perfumes da loja Vision Perfumes.
-    Aqui está a lista de produtos disponíveis:
-    ${productList}
+  const prompt = `Você é um consultor de fragrâncias premium da loja Vision Perfumes.
 
-    O cliente perguntou: "${query}"
+REGRAS OBRIGATÓRIAS:
+1. Você SOMENTE pode sugerir perfumes que estejam na lista abaixo. NUNCA invente ou sugira perfumes que não estejam nesta lista.
+2. Para cada perfume sugerido, inclua o ID exato entre colchetes no formato [ID:xxx].
+3. Sugira entre 1 e 3 perfumes que melhor atendam ao pedido do cliente.
+4. Seja elegante, sofisticado e prestativo. Responda em português brasileiro.
+5. Explique brevemente por que cada perfume combina com o pedido.
+6. Mencione o preço de cada produto sugerido.
 
-    Com base na pergunta do cliente e nos produtos disponíveis, sugira 1 ou 2 perfumes da lista.
-    Explique brevemente por que eles combinam com o pedido.
-    Seja elegante, sofisticado e prestativo. Responda em português.
-    Não invente produtos que não estejam na lista.
-  `;
+CATÁLOGO COMPLETO DA LOJA (APENAS estes produtos existem):
+${productList}
+
+PERGUNTA DO CLIENTE: "${query}"
+
+Responda de forma natural e elegante, incluindo o [ID:xxx] de cada produto sugerido no texto.`;
 
   try {
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
       contents: [{ role: 'user', parts: [{ text: prompt }] }],
       config: {
-        thinkingConfig: { thinkingBudget: 0 } // Disable thinking for faster response
+        thinkingConfig: { thinkingBudget: 0 }
       }
     });
-    
-    return response.text || "Desculpe, não consegui encontrar uma recomendação no momento.";
+
+    const text = response.text || "Desculpe, não consegui encontrar uma recomendação no momento.";
+
+    // Extract product IDs from the response using [ID:xxx] pattern
+    const idMatches = text.matchAll(/\[ID:([^\]]+)\]/g);
+    const recommendations: RecommendedProduct[] = [];
+    const seenIds = new Set<string>();
+
+    for (const match of idMatches) {
+      const productId = match[1].trim();
+      if (!seenIds.has(productId) && products.some(p => p.id === productId)) {
+        seenIds.add(productId);
+        recommendations.push({ productId, reason: '' });
+      }
+    }
+
+    // Clean the [ID:xxx] markers from the display text
+    const cleanMessage = text.replace(/\s*\[ID:[^\]]+\]/g, '');
+
+    return { message: cleanMessage, recommendations };
   } catch (error) {
     console.error("Erro ao consultar Gemini:", error);
-    return "Houve um erro ao conectar com nosso consultor virtual. Tente novamente mais tarde.";
+    return {
+      message: "Houve um erro ao conectar com nosso consultor virtual. Tente novamente mais tarde.",
+      recommendations: []
+    };
   }
 };
