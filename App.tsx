@@ -22,7 +22,6 @@ import { getSiteSettings } from './services/settingsService';
 import { getCartFromFirebase, saveCartToFirebase } from './services/cartService';
 import { ToastProvider } from './context/ToastContext';
 import { trackViewItemList, trackAddToCart, trackBeginCheckout } from './services/analyticsService';
-import { trackViewItemList, trackAddToCart, trackBeginCheckout } from './services/analyticsService';
 import { Loader2, Shield, Flower2, Sparkles, Gift, HelpCircle, ChevronDown } from 'lucide-react';
 
 const AppContent: React.FC = () => {

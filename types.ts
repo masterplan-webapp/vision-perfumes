@@ -64,9 +64,11 @@ export interface UserProfile {
   uid: string;
   email: string;
   displayName?: string;
+  name?: string; // Additional field for full name
   phone?: string;
   defaultAddress?: Address;
   wishlist?: string[]; // Array of Product IDs
+  createdAt?: string;
 }
 
 export interface AdminUser {
