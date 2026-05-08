@@ -31,7 +31,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, items, onUpd
         {/* Header */}
         <div className="p-6 border-b border-gray-medium flex items-center justify-between bg-white">
           <h2 className="font-serif text-2xl font-bold text-primary">Seu Carrinho</h2>
-          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-600" aria-label="Fechar">
             <X size={24} />
           </button>
         </div>
@@ -71,15 +71,15 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, items, onUpd
                         <div className="flex items-center border border-gray-medium rounded-lg">
                           <button 
                             onClick={() => onUpdateQty(item.id, -1, item.selectedVariation?.id)}
-                            className="p-1 hover:bg-gray-100 transition-colors rounded-l-lg"
+                            className="p-1 hover:bg-gray-100 transition-colors rounded-l-lg text-gray-700"
                             disabled={item.quantity <= 1}
                           >
                             <Minus size={14} />
                           </button>
-                          <span className="w-8 text-center text-sm font-medium">{item.quantity}</span>
+                          <span className="w-8 text-center text-sm font-medium text-gray-900">{item.quantity}</span>
                           <button 
                             onClick={() => onUpdateQty(item.id, 1, item.selectedVariation?.id)}
-                            className="p-1 hover:bg-gray-100 transition-colors rounded-r-lg"
+                            className="p-1 hover:bg-gray-100 transition-colors rounded-r-lg text-gray-700"
                           >
                             <Plus size={14} />
                           </button>
