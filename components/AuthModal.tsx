@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { X, Mail, Lock, User, Loader2 } from 'lucide-react';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { auth } from '../services/firebase';
+import { updateUserProfile } from '../services/userService';
 import { useToast } from '../context/ToastContext';
 
 interface AuthModalProps {
@@ -33,6 +34,12 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         if (name) {
           await updateProfile(userCredential.user, { displayName: name });
         }
+        // Criar perfil no Firestore para disparar o e-mail de boas-vindas
+        await updateUserProfile(userCredential.user.uid, {
+          email: email,
+          name: name || '',
+          createdAt: new Date().toISOString()
+        });
         addToast('Conta criada com sucesso! Bem-vindo.', 'success');
       }
       onClose();

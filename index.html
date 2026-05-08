@@ -1,9 +1,54 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vision Perfumes - Fragrâncias Premium</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vision Perfumes | Perfumes Importados e Fragrâncias de Luxo</title>
+    <meta name="description" content="Descubra a Vision Perfumes: a sua curadoria de perfumes importados premium. Fragrâncias masculinas, femininas e unissex das melhores marcas do mundo. Elegância em cada nota." />
+    <meta name="keywords" content="perfumes importados, perfumes de luxo, fragrâncias premium, vision perfumes, perfumes masculinos, perfumes femininos" />
+    <meta name="author" content="Vision Perfumes" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://visionperfumes.com.br/" />
+    <meta property="og:title" content="Vision Perfumes | Perfumes Importados e Fragrâncias de Luxo" />
+    <meta property="og:description" content="As melhores fragrâncias do mundo reunidas em uma curadoria exclusiva. Elegância e sofisticação em cada nota." />
+    <meta property="og:image" content="https://visionperfumes.com.br/assets/og-image.jpg" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://visionperfumes.com.br/" />
+    <meta property="twitter:title" content="Vision Perfumes | Perfumes Importados e Fragrâncias de Luxo" />
+    <meta property="twitter:description" content="As melhores fragrâncias do mundo reunidas em uma curadoria exclusiva." />
+    <meta property="twitter:image" content="https://visionperfumes.com.br/assets/og-image.jpg" />
+
+    <!-- JSON-LD Structured Data (GEO/AEO) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Store",
+      "name": "Vision Perfumes",
+      "url": "https://visionperfumes.com.br",
+      "logo": "https://visionperfumes.com.br/assets/logo-horizontal.png",
+      "description": "Curadoria especializada em perfumes importados e fragrâncias de luxo.",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "BR"
+      },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://visionperfumes.com.br/?search={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-XXXXXXX');</script>
+    <!-- End Google Tag Manager -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -22,6 +67,10 @@
     <link rel="stylesheet" href="/index.css">
 </head>
 <body class="bg-primary text-white antialiased">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
 </body>

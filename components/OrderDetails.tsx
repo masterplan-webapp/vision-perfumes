@@ -16,7 +16,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, isAdmin = false }) =
     switch (status) {
       case 'pending': return 'bg-yellow-100 text-yellow-700';
       case 'processing': return 'bg-blue-100 text-blue-700';
-      case 'shipped': return 'bg-purple-100 text-purple-700';
+      case 'shipped': return 'bg-blue-100 text-blue-700';
       case 'delivered': return 'bg-green-100 text-green-700';
       case 'cancelled': return 'bg-red-100 text-red-700';
       default: return 'bg-gray-100 text-gray-700';
@@ -114,18 +114,18 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, isAdmin = false }) =
           </div>
 
           {order.trackingCode && (
-            <div className="bg-purple-50 p-4 border border-purple-100 rounded-lg flex flex-col gap-2">
-              <div className="flex items-center gap-2 text-purple-800 font-bold text-sm">
+            <div className="bg-blue-50 p-4 border border-blue-100 rounded-lg flex flex-col gap-2">
+              <div className="flex items-center gap-2 text-blue-800 font-bold text-sm">
                 <Truck size={16} /> Rastreamento
               </div>
-              <p className="font-mono text-sm text-purple-700 bg-white/50 p-2 rounded border border-purple-100">
+              <p className="font-mono text-sm text-blue-700 bg-white/50 p-2 rounded border border-blue-100">
                 {order.trackingCode}
               </p>
               <a 
                 href={`https://melhorrastreio.com.br/rastreio/${order.trackingCode}`} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-xs text-purple-600 hover:text-purple-800 underline mt-1"
+                className="text-xs text-blue-600 hover:text-blue-800 underline mt-1"
               >
                 Acompanhar Entrega
               </a>

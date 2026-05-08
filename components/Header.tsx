@@ -80,6 +80,8 @@ const Header: React.FC<HeaderProps> = ({
           {!isAdminView && (
             <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-lg relative">
                 <input
+                id="search-desktop"
+                aria-label="Buscar produtos"
                 type="text"
                 placeholder="O que você está procurando hoje?"
                 className="w-full py-2.5 px-6 pr-14 bg-white/5 border border-white/20 rounded-lg text-sm text-white placeholder:text-white/40 focus:outline-none focus:border-accent-gold transition-all"
@@ -99,7 +101,7 @@ const Header: React.FC<HeaderProps> = ({
             {!isAdminView && (
                 <button 
                     onClick={onAiClick}
-                    className="hidden md:flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-full text-xs font-bold hover:opacity-90 transition-opacity shadow-md"
+                    className="hidden md:flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-full text-xs font-bold hover:opacity-90 transition-opacity shadow-md"
                 >
                     <Sparkles size={14} />
                     Consultor Virtual
@@ -183,6 +185,8 @@ const Header: React.FC<HeaderProps> = ({
             <div className="md:hidden py-4">
                 <form onSubmit={handleSearch} className="relative w-full">
                     <input
+                        id="search-mobile"
+                        aria-label="Buscar produtos mobile"
                         type="text"
                         placeholder="O que você está procurando hoje?"
                         className="w-full py-2.5 px-6 pr-14 bg-white/5 border border-white/20 rounded-lg text-sm text-white placeholder:text-white/40 focus:outline-none focus:border-accent-gold transition-all"
@@ -226,7 +230,7 @@ const Header: React.FC<HeaderProps> = ({
                         </button>
                         </>
                     )}
-                    <button onClick={() => { onAiClick(); setIsMenuOpen(false); }} className="flex items-center gap-2 text-purple-400 font-bold text-left">
+                    <button onClick={() => { onAiClick(); setIsMenuOpen(false); }} className="flex items-center gap-2 text-indigo-400 font-bold text-left">
                         <Sparkles size={16} /> Consultor Virtual
                     </button>
                 </li>

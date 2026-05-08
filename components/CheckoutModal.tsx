@@ -12,6 +12,7 @@ import { doc as firestoreDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../services/firebase';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
+import { trackPurchase } from '../services/analyticsService';
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -229,6 +230,9 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, cartItem
         shippingCost: shippingCost,
         paymentMethod: paymentMethod
       };
+
+      // 4. Track Purchase (E-commerce)
+      trackPurchase(orderId, finalTotal, cartItems, shippingCost);
 
       try {
         // Emails are now handled by backend triggers (onOrderCreated)

@@ -65,7 +65,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onAddToCa
                     : 'border-gray-200 hover:border-gray-400'
                 }`}
               >
-                <img src={product.image} alt="" className="w-full h-full object-cover" />
+                <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
               </button>
               {product.images.map((img, i) => (
                 <button
@@ -77,7 +77,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onAddToCa
                       : 'border-gray-200 hover:border-gray-400'
                   }`}
                 >
-                  <img src={img} alt="" className="w-full h-full object-cover" />
+                  <img src={img} alt={`${product.name} ${i + 1}`} className="w-full h-full object-cover" />
                 </button>
               ))}
             </div>

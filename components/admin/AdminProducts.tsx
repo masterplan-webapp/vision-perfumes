@@ -277,7 +277,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({ products, onProductUpdate
                     <tr key={product.id} className="hover:bg-gray-50 transition-colors">
                       <td className="p-4">
                         <div className="w-12 h-12 rounded bg-gray-100 overflow-hidden border border-gray-200">
-                          <img src={product.image} alt="" className="w-full h-full object-cover" />
+                          <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
                         </div>
                       </td>
                       <td className="p-4 font-bold text-gray-700">{product.name}</td>
@@ -321,7 +321,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({ products, onProductUpdate
             {filtered.map(product => (
               <div key={product.id} className="bg-white rounded-xl border border-gray-200 p-4 flex items-center gap-4 shadow-sm">
                 <div className="w-16 h-16 rounded-lg bg-gray-100 overflow-hidden border border-gray-200 shrink-0">
-                  <img src={product.image} alt="" className="w-full h-full object-cover" />
+                  <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-bold text-gray-800 truncate">{product.name}</p>
@@ -549,7 +549,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({ products, onProductUpdate
                     <div className="grid grid-cols-4 md:grid-cols-6 gap-2">
                       {(currentProduct.images || []).map((url, idx) => (
                         <div key={idx} className="relative group aspect-square rounded-lg overflow-hidden border border-gray-200 bg-white">
-                          <img src={url} alt="" className="w-full h-full object-cover" />
+                          <img src={url} alt={`${currentProduct.name} ${idx + 1}`} className="w-full h-full object-cover" />
                           <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1">
                             <button
                               type="button"

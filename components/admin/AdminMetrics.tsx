@@ -18,7 +18,7 @@ const STATUS_LABELS: Record<string, string> = {
 const STATUS_COLORS: Record<string, string> = {
   pending: 'bg-yellow-400',
   processing: 'bg-blue-400',
-  shipped: 'bg-purple-400',
+  shipped: 'bg-blue-400',
   delivered: 'bg-green-500',
   cancelled: 'bg-red-400',
 };
@@ -88,8 +88,8 @@ const AdminMetrics: React.FC<AdminMetricsProps> = ({ products, orders }) => {
       label: 'Ticket Médio',
       value: `R$ ${fmt(metrics.avgTicket)}`,
       icon: TrendingUp,
-      color: 'text-purple-600',
-      bg: 'bg-purple-50',
+      color: 'text-indigo-600',
+      bg: 'bg-indigo-50',
     },
     {
       label: 'Clientes Únicos',

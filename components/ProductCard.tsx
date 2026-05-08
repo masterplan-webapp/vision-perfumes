@@ -3,6 +3,7 @@ import React from 'react';
 import { Heart, Star, ShoppingBag } from 'lucide-react';
 import { Product } from '../types';
 import { useWishlist } from '../context/WishlistContext';
+import { trackViewItem } from '../services/analyticsService';
 
 interface ProductCardProps {
   product: Product;
@@ -22,7 +23,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, onClick
   return (
     <div className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-accent-gold/20 flex flex-col h-full">
       {/* Image Container */}
-      <div className="relative pt-[100%] bg-gray-light overflow-hidden cursor-pointer" onClick={() => onClick(product)}>
+      <div className="relative pt-[100%] bg-gray-light overflow-hidden cursor-pointer" onClick={() => { trackViewItem(product); onClick(product); }}>
         <img 
           src={product.image} 
           alt={product.name} 
@@ -46,6 +47,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, onClick
         {/* Action Overlay */}
         <button 
             onClick={handleHeartClick}
+            aria-label={isLiked ? "Remover da lista de desejos" : "Adicionar à lista de desejos"}
             className={`absolute top-3 right-3 w-9 h-9 bg-white rounded-full flex items-center justify-center transition-colors shadow-md z-10 ${isLiked ? 'text-accent-rose' : 'text-gray-400 hover:text-accent-rose hover:bg-red-50'}`}
         >
           <Heart size={18} fill={isLiked ? "currentColor" : "none"} className={isLiked ? "" : ""} />
@@ -59,7 +61,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, onClick
         </div>
         <h3 
           className="font-serif text-lg font-bold text-primary mb-2 cursor-pointer hover:text-accent-gold transition-colors line-clamp-1"
-          onClick={() => onClick(product)}
+          onClick={() => { trackViewItem(product); onClick(product); }}
         >
           {product.name}
         </h3>
@@ -84,6 +86,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, onClick
           </div>
           <button 
             onClick={() => onAddToCart(product)}
+            aria-label={`Adicionar ${product.name} ao carrinho`}
             className="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center hover:bg-accent-gold transition-colors shadow-md group-active:scale-95"
           >
             <ShoppingBag size={18} />

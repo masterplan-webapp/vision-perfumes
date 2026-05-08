@@ -14,7 +14,7 @@ interface AdminOrdersProps {
 const STATUS_CONFIG: Record<string, { label: string; classes: string }> = {
   pending:    { label: 'Pendente',     classes: 'bg-yellow-100 text-yellow-800' },
   processing: { label: 'Processando',  classes: 'bg-blue-100 text-blue-800' },
-  shipped:    { label: 'Enviado',      classes: 'bg-purple-100 text-purple-800' },
+  shipped:    { label: 'Enviado',      classes: 'bg-indigo-100 text-indigo-800' },
   delivered:  { label: 'Entregue',     classes: 'bg-green-100 text-green-800' },
   cancelled:  { label: 'Cancelado',    classes: 'bg-red-100 text-red-800' },
 };
@@ -242,7 +242,7 @@ const AdminOrders: React.FC<AdminOrdersProps> = ({ orders, loading, handleStatus
                   />
                   <button
                     onClick={handleSaveTracking}
-                    className="bg-purple-600 text-white px-5 py-3 rounded-lg font-bold hover:bg-purple-700 transition-colors text-sm whitespace-nowrap"
+                    className="bg-indigo-600 text-white px-5 py-3 rounded-lg font-bold hover:bg-indigo-700 transition-colors text-sm whitespace-nowrap"
                   >
                     Salvar
                   </button>

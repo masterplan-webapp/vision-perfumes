@@ -21,7 +21,9 @@ import { fetchProducts } from './services/productService';
 import { getSiteSettings } from './services/settingsService';
 import { getCartFromFirebase, saveCartToFirebase } from './services/cartService';
 import { ToastProvider } from './context/ToastContext';
-import { Loader2, Shield, Flower2, Sparkles, Gift } from 'lucide-react';
+import { trackViewItemList, trackAddToCart, trackBeginCheckout } from './services/analyticsService';
+import { trackViewItemList, trackAddToCart, trackBeginCheckout } from './services/analyticsService';
+import { Loader2, Shield, Flower2, Sparkles, Gift, HelpCircle, ChevronDown } from 'lucide-react';
 
 const AppContent: React.FC = () => {
   // State
@@ -60,6 +62,11 @@ const AppContent: React.FC = () => {
     setProducts(prodData);
     setSiteSettings(settingsData);
     setIsLoadingProducts(false);
+    
+    // Track View Item List
+    if (prodData.length > 0) {
+      trackViewItemList(prodData);
+    }
   };
 
   useEffect(() => {
@@ -138,6 +145,10 @@ const AppContent: React.FC = () => {
           selectedVariation: variation 
       }];
     });
+    
+    // Track Add to Cart
+    trackAddToCart(product, quantity);
+    
     setIsCartOpen(true);
   };
 
@@ -169,6 +180,7 @@ const AppContent: React.FC = () => {
           return;
       }
       setIsCartOpen(false);
+      trackBeginCheckout(cartItems);
       setIsCheckoutOpen(true);
   };
 
@@ -299,6 +311,8 @@ const AppContent: React.FC = () => {
                     {/* Filter Controls */}
                     <div className="flex flex-wrap gap-3">
                     <select 
+                        id="filter-brand"
+                        aria-label="Filtrar por Marca"
                         className="px-4 py-2 bg-gray-charcoal border border-white/10 rounded-lg text-sm text-white focus:border-accent-gold focus:outline-none appearance-none cursor-pointer"
                         onChange={(e) => setFilters(prev => ({...prev, brand: e.target.value}))}
                         value={filters.brand}
@@ -308,6 +322,8 @@ const AppContent: React.FC = () => {
                     </select>
 
                     <select 
+                        id="filter-price"
+                        aria-label="Filtrar por Faixa de Preço"
                         className="px-4 py-2 bg-gray-charcoal border border-white/10 rounded-lg text-sm text-white focus:border-accent-gold focus:outline-none appearance-none cursor-pointer"
                         onChange={(e) => setFilters(prev => ({...prev, priceRange: e.target.value}))}
                         value={filters.priceRange}
@@ -320,6 +336,8 @@ const AppContent: React.FC = () => {
                     </select>
 
                     <select 
+                        id="sort-products"
+                        aria-label="Ordenar produtos"
                         className="px-4 py-2 bg-gray-charcoal border border-white/10 rounded-lg text-sm text-white focus:border-accent-gold focus:outline-none appearance-none cursor-pointer"
                         onChange={(e) => setFilters(prev => ({...prev, sort: e.target.value}))}
                         value={filters.sort}
@@ -379,6 +397,47 @@ const AppContent: React.FC = () => {
                     </div>
                 )}
                 </section>
+                
+                {/* FAQ Section (GEO/AEO Optimization) */}
+                {!filters.category && !filters.search && (
+                  <section className="py-20 bg-gray-charcoal">
+                    <div className="container mx-auto px-4 max-w-4xl">
+                      <div className="flex items-center justify-center gap-3 mb-12">
+                        <HelpCircle className="text-accent-gold" size={32} />
+                        <h2 className="font-serif text-3xl font-bold text-white text-center">Dúvidas Frequentes</h2>
+                      </div>
+                      <div className="space-y-6">
+                        {[
+                          {
+                            q: "Os perfumes da Vision Perfumes são originais?",
+                            a: "Sim, trabalhamos exclusivamente com fragrâncias originais e lacradas, importadas diretamente dos distribuidores oficiais das marcas mais prestigiadas do mundo."
+                          },
+                          {
+                            q: "Qual a durabilidade (fixação) dos perfumes?",
+                            a: "A fixação depende da concentração (EDC, EDT, EDP, Parfum) e das notas da fragrância, além do tipo de pele. Perfumes 'Eau de Parfum' geralmente oferecem maior durabilidade, chegando a 8-12 horas."
+                          },
+                          {
+                            q: "Como escolher o perfume ideal para mim?",
+                            a: "Recomendamos identificar as famílias olfativas que você mais gosta (Ex: Amadeirado, Floral, Cítrico). Nosso Consultor de IA também pode ajudar você a encontrar a fragrância perfeita com base em suas preferências."
+                          },
+                          {
+                            q: "Vocês realizam entregas em todo o Brasil?",
+                            a: "Sim, entregamos em todo o território nacional via transportadoras parceiras e Correios, com seguro total contra extravios."
+                          }
+                        ].map((faq, i) => (
+                          <div key={i} className="bg-primary/30 p-6 rounded-2xl border border-white/5 hover:border-accent-gold/30 transition-all">
+                            <h3 className="font-bold text-lg text-accent-gold mb-3 flex justify-between items-center">
+                              {faq.q}
+                            </h3>
+                            <p className="text-gray-300 leading-relaxed">
+                              {faq.a}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </section>
+                )}
             </>
         )}
       </main>
