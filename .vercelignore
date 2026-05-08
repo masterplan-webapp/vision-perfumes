@@ -1,0 +1,15 @@
+
+# Ignore Firebase Functions for Vercel frontend build
+functions/
+scraper.mjs
+fetch_emirates.mjs
+generate_descriptions.mjs
+preview_desc.mjs
+upload_to_firestore.mjs
+scratch/
+.agent/
+.claude/
+emirates_products.json
+vision_catalog.json
+vision_catalog_with_desc.json
+.descriptions_cache.json
