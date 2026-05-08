@@ -149,13 +149,17 @@ export const processPayment = async (
         let cardToken: string | undefined;
         
         if (method === 'credit_card') {
-          if (!cardData) {
+          if (!cardData && amount > 0) {
             return { success: false, error: "Dados do cartão são obrigatórios." };
           }
           
-          console.log("[Pagamento] Tokenizando cartão...");
-          cardToken = await tokenizeCard(cardData, publicKey);
-          console.log("[Pagamento] Cartão tokenizado com sucesso.");
+          if (amount > 0) {
+            console.log("[Pagamento] Tokenizando cartão...");
+            cardToken = await tokenizeCard(cardData!, publicKey);
+            console.log("[Pagamento] Cartão tokenizado com sucesso.");
+          } else {
+            console.log("[Pagamento] Pedido gratuito (cupom 100%). Pulando tokenização.");
+          }
         }
 
         // ── Enviar ao backend (Cloud Function) ────────────────────

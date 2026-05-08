@@ -523,29 +523,31 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, cartItem
               </div>
 
               {/* Payment Method Selection */}
-              <div className="flex gap-2 mb-4">
-                  {[
-                      { id: 'credit_card', label: 'Cartão', icon: CreditCard },
-                      { id: 'pix', label: 'Pix', icon: QrCode },
-                      { id: 'boleto', label: 'Boleto', icon: Barcode },
-                  ].map(method => (
-                      <button
-                        key={method.id}
-                        onClick={() => setPaymentMethod(method.id as PaymentMethod)}
-                        className={`flex-1 flex flex-col items-center justify-center p-3 rounded-xl border transition-all ${
-                            paymentMethod === method.id 
-                            ? 'border-accent-gold bg-accent-gold text-white shadow-md' 
-                            : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-600'
-                        }`}
-                      >
-                          <method.icon size={20} className="mb-1" />
-                          <span className="text-xs font-bold">{method.label}</span>
-                      </button>
-                  ))}
-              </div>
+              {finalTotal > 0 && (
+                <div className="flex gap-2 mb-4">
+                    {[
+                        { id: 'credit_card', label: 'Cartão', icon: CreditCard },
+                        { id: 'pix', label: 'Pix', icon: QrCode },
+                        { id: 'boleto', label: 'Boleto', icon: Barcode },
+                    ].map(method => (
+                        <button
+                          key={method.id}
+                          onClick={() => setPaymentMethod(method.id as PaymentMethod)}
+                          className={`flex-1 flex flex-col items-center justify-center p-3 rounded-xl border transition-all ${
+                              paymentMethod === method.id 
+                              ? 'border-accent-gold bg-accent-gold text-white shadow-md' 
+                              : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-600'
+                          }`}
+                        >
+                            <method.icon size={20} className="mb-1" />
+                            <span className="text-xs font-bold">{method.label}</span>
+                        </button>
+                    ))}
+                </div>
+              )}
 
               {/* Credit Card Form */}
-              {paymentMethod === 'credit_card' && (
+              {paymentMethod === 'credit_card' && finalTotal > 0 && (
                 <div className="space-y-4 animate-fade-in">
                     <div className="relative">
                         <CreditCard className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
@@ -593,10 +595,10 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, cartItem
                   <button onClick={() => setStep('address')} className="flex-1 py-3 border border-gray-300 rounded-lg font-bold text-gray-600 hover:bg-gray-50">Voltar</button>
                   <button 
                     onClick={handleCreateOrder}
-                    disabled={loading || (paymentMethod === 'credit_card' && (!isValidCardNumber(cardNumber) || !cardExpiry || !cardCvv || !cardName))}
+                    disabled={loading || (finalTotal > 0 && paymentMethod === 'credit_card' && (!isValidCardNumber(cardNumber) || !cardExpiry || !cardCvv || !cardName))}
                     className="flex-1 bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 transition-colors flex justify-center items-center gap-2 shadow-lg shadow-green-600/20 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {loading ? <Loader2 className="animate-spin" /> : `Pagar R$ ${finalTotal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`}
+                    {loading ? <Loader2 className="animate-spin" /> : (finalTotal > 0 ? `Pagar R$ ${finalTotal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}` : 'Finalizar Pedido Grátis')}
                   </button>
               </div>
             </div>
