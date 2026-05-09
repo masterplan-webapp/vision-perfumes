@@ -618,7 +618,7 @@ const getBaseEmailTemplate = (content) => `
               <p style="opacity: 0.7;">Elegância em cada nota.</p>
               <div style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
                 <a href="https://visionperfumes.com.br" style="color: #d4af37; text-decoration: none; margin: 0 10px;">Loja</a>
-                <a href="https://visionperfumes.com.br/minha-conta" style="color: #d4af37; text-decoration: none; margin: 0 10px;">Minha Conta</a>
+                <a href="https://visionperfumes.com.br/?view=orders" style="color: #d4af37; text-decoration: none; margin: 0 10px;">Meus Pedidos</a>
               </div>
             </td>
           </tr>
@@ -672,7 +672,7 @@ exports.onOrderCreated = onDocumentCreated(
       </div>
 
       <div style="text-align: center; margin-top: 40px;">
-        <a href="https://visionperfumes.com.br/minha-conta" class="button">Acompanhar Pedido</a>
+        <a href="https://visionperfumes.com.br/?view=orders" class="button">Acompanhar Pedido</a>
       </div>
     `;
 
@@ -719,7 +719,7 @@ exports.onOrderUpdated = onDocumentUpdated(
     const resend = new Resend(resendApiKey.value());
     let statusTitle = "Atualização de Pedido";
     let buttonText = "Ver Detalhes";
-    let buttonUrl = "https://visionperfumes.com.br/minha-conta";
+    let buttonUrl = "https://visionperfumes.com.br/?view=orders";
     let subject = "";
     let messageBody = "";
     let showTracking = false;

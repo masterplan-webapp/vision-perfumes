@@ -70,6 +70,12 @@ const AppContent: React.FC = () => {
 
   useEffect(() => {
     loadData();
+
+    // Check URL parameters for direct modal access
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('view') === 'orders') {
+      setIsOrdersOpen(true);
+    }
   }, []);
 
   // Sync Products with Wishlist Context
