@@ -129,6 +129,7 @@ export interface Order {
   shippingAddress: Address;
   trackingCode?: string;
   paymentMethod?: string;
+  frenetOrderId?: string;
 }
 
 export interface HeroSlide {

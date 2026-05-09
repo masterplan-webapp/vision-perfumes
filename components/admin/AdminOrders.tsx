@@ -134,20 +134,27 @@ const AdminOrders: React.FC<AdminOrdersProps> = ({ orders, loading, handleStatus
                         R$ {order.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                       </td>
                       <td className="p-4">
-                        <div className="flex items-center gap-2">
-                          <StatusBadge status={order.status} />
-                          <select
-                            value={order.status}
-                            onChange={e => handleStatusChange(order.id, e.target.value as OrderStatus)}
-                            className="text-xs text-gray-500 border-0 bg-transparent cursor-pointer focus:ring-0 outline-none p-0"
-                            title="Alterar status"
-                          >
-                            <option value="pending">Pendente</option>
-                            <option value="processing">Processando</option>
-                            <option value="shipped">Enviado</option>
-                            <option value="delivered">Entregue</option>
-                            <option value="cancelled">Cancelado</option>
-                          </select>
+                        <div className="flex flex-col gap-1.5">
+                          <div className="flex items-center gap-2">
+                            <StatusBadge status={order.status} />
+                            <select
+                              value={order.status}
+                              onChange={e => handleStatusChange(order.id, e.target.value as OrderStatus)}
+                              className="text-xs text-gray-500 border-0 bg-transparent cursor-pointer focus:ring-0 outline-none p-0"
+                              title="Alterar status"
+                            >
+                              <option value="pending">Pendente</option>
+                              <option value="processing">Processando</option>
+                              <option value="shipped">Enviado</option>
+                              <option value="delivered">Entregue</option>
+                              <option value="cancelled">Cancelado</option>
+                            </select>
+                          </div>
+                          {order.frenetOrderId && (
+                            <div className="flex items-center gap-1 text-[10px] text-green-600 font-bold uppercase">
+                              <Truck size={10} /> Etiqueta Frenet: {order.frenetOrderId}
+                            </div>
+                          )}
                         </div>
                       </td>
                       <td className="p-4 text-right">
@@ -179,7 +186,14 @@ const AdminOrders: React.FC<AdminOrdersProps> = ({ orders, loading, handleStatus
                     <p className="text-xs text-gray-400">{order.customerEmail}</p>
                     <p className="text-[11px] font-mono text-gray-300 mt-0.5">#{order.id.slice(0, 8)}</p>
                   </div>
-                  <StatusBadge status={order.status} />
+                  <div className="flex flex-col items-end gap-1.5">
+                    <StatusBadge status={order.status} />
+                    {order.frenetOrderId && (
+                      <span className="text-[9px] text-green-600 font-bold bg-green-50 px-1.5 py-0.5 rounded border border-green-100 uppercase flex items-center gap-1">
+                        <Truck size={10} /> Etiqueta OK
+                      </span>
+                    )}
+                  </div>
                 </div>
                 <div className="flex items-center justify-between">
                   <div>

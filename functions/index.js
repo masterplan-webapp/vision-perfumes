@@ -77,6 +77,100 @@ function parsePhone(phoneStr) {
   };
 }
 
+/**
+ * Cria uma postagem (pedido) na Frenet para gerar a etiqueta
+ */
+async function createFrenetPostagem(order, orderId) {
+  try {
+    // 1. Buscar configurações globais (Token e CEP de Origem)
+    const settingsSnap = await db.collection("settings").doc("global").get();
+    if (!settingsSnap.exists) {
+      console.error("[Frenet] Configurações globais não encontradas.");
+      return null;
+    }
+    const settings = settingsSnap.data();
+    const token = settings.frenetToken;
+    const originZip = settings.originZip || "01001-000";
+
+    if (!token) {
+      console.error("[Frenet] Token não configurado.");
+      return null;
+    }
+
+    if (!order.shippingServiceCode) {
+      console.warn(`[Frenet] Pedido ${orderId} sem shippingServiceCode. Pulando etiqueta.`);
+      return null;
+    }
+
+    // 2. Montar payload de postagem
+    const payload = {
+      Seller: {
+        ZipCode: originZip.replace(/\D/g, ""),
+      },
+      Recipient: {
+        ZipCode: order.shippingAddress.zip.replace(/\D/g, ""),
+        Address: order.shippingAddress.street,
+        Number: order.shippingAddress.number,
+        Complement: order.shippingAddress.complement || "",
+        District: order.shippingAddress.neighborhood,
+        City: order.shippingAddress.city,
+        State: order.shippingAddress.state,
+        Country: "BR",
+        Email: order.customerEmail,
+        CellPhone: order.customerPhone.replace(/\D/g, ""),
+        Document: order.customerDocument.replace(/\D/g, ""),
+      },
+      ShippingServiceCode: order.shippingServiceCode,
+      OrderNumber: orderId,
+      Value: order.total,
+      Products: order.items.map(item => ({
+        Quantity: item.quantity,
+        SKU: item.id,
+        Description: item.name,
+        UnitValue: item.price,
+        Weight: item.weight || 0.3,
+        Length: item.dimensions?.depth || 15,
+        Width: item.dimensions?.width || 15,
+        Height: item.dimensions?.height || 10,
+      }))
+    };
+
+    console.log(`[Frenet] Gerando etiqueta para Pedido #${orderId.slice(0, 8)}...`);
+
+    // 3. Chamar API Frenet
+    const response = await fetch("https://api.frenet.com.br/shipping/order", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "token": token,
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`[Frenet] Erro na API (${response.status}):`, errorText);
+      return null;
+    }
+
+    const data = await response.json();
+    console.log(`[Frenet] Etiqueta gerada com sucesso: ${data.OrderId || "OK"}`);
+    
+    // 4. Salvar o ID da Frenet no pedido para consulta posterior
+    if (data.OrderId) {
+      await db.collection("orders").doc(orderId).update({
+        frenetOrderId: data.OrderId,
+        updatedAt: new Date().toISOString()
+      });
+    }
+    
+    return data;
+  } catch (error) {
+    console.error("[Frenet] Erro ao criar postagem:", error.message);
+    return null;
+  }
+}
+
 // ─── createOrder ───────────────────────────────────────────────────────────────
 
 /**
@@ -122,10 +216,21 @@ exports.createOrder = onRequest(
 
       // ── Validações ────────────────────────────────────────────────
 
-      if (!method || !amount || !customer || !items) {
+      if (!method || amount === undefined || amount === null || !customer || !items) {
         res.status(400).json({
           success: false,
           error: "Campos obrigatórios: method, amount, customer, items",
+        });
+        return;
+      }
+
+      // Zero-amount orders (e.g. 100% coupon) — skip payment gateway
+      if (amount === 0) {
+        console.log(`[Pagar.me] Pedido com valor zero (cupom 100%). Aprovando diretamente.`);
+        res.status(200).json({
+          success: true,
+          transactionId: `free_${Date.now()}`,
+          status: "paid",
         });
         return;
       }
@@ -615,12 +720,18 @@ exports.onOrderUpdated = onDocumentUpdated(
     let statusTitle = "Atualização de Pedido";
     let buttonText = "Ver Detalhes";
     let buttonUrl = "https://visionperfumes.com.br/minha-conta";
+    let subject = "";
+    let messageBody = "";
+    let showTracking = false;
 
     switch (afterStatus) {
       case 'processing':
         subject = `Pagamento Confirmado! 🎉 #${orderId.slice(0, 8)}`;
         statusTitle = "Pagamento Confirmado!";
         messageBody = "Ótimas notícias! Seu pagamento foi processado com sucesso. Nossa equipe já está separando suas fragrâncias com o máximo cuidado.";
+        
+        // AUTOMAÇÃO: Gerar etiqueta na Frenet
+        await createFrenetPostagem(order, orderId);
         break;
       case 'shipped':
         subject = `Seu pedido está a caminho! 🚚 #${orderId.slice(0, 8)}`;
