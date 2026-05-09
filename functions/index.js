@@ -689,9 +689,9 @@ exports.onOrderCreated = onDocumentCreated(
       // Também avisa o admin
       await resend.emails.send({
         from: 'Vision Perfumes <sistema@visionperfumes.com.br>',
-        to: ['admin@visionperfumes.com.br'],
+        to: ['fabiozacari@gmail.com'],
         subject: `💰 Novo Pedido: ${formatCurrency(order.total)}`,
-        html: `<h3>Novo pedido de ${order.customerName}</h3><p>Valor: ${formatCurrency(order.total)}</p><p>ID: ${orderId}</p>`,
+        html: `<h3>Novo pedido de ${order.customerName}</h3><p>Valor: ${formatCurrency(order.total)}</p><p>ID: ${orderId}</p><p>Email: ${order.customerEmail}</p>`,
       });
     } catch (error) {
       console.error("[Email] Erro ao enviar email de criação:", error);
@@ -781,6 +781,14 @@ exports.onOrderUpdated = onDocumentUpdated(
         subject: subject,
         html: html,
       });
+
+      // Notificar Admin sobre a mudança de status
+      await resend.emails.send({
+        from: 'Vision Perfumes <sistema@visionperfumes.com.br>',
+        to: ['fabiozacari@gmail.com'],
+        subject: `🔄 Pedido Atualizado: ${afterStatus.toUpperCase()} - #${orderId.slice(0, 8)}`,
+        html: `<h3>Status do pedido de ${order.customerName} mudou para: ${afterStatus}</h3><p>Pedido: #${orderId}</p>`,
+      });
     } catch (error) {
       console.error("[Email] Erro ao enviar email de atualização:", error);
     }
@@ -826,6 +834,14 @@ exports.onUserDocumentCreated = onDocumentCreated(
         to: [user.email],
         subject: 'Bem-vindo à Vision Perfumes — Elegância em cada nota',
         html: html,
+      });
+
+      // Notificar Admin sobre novo usuário
+      await resend.emails.send({
+        from: 'Vision Perfumes <sistema@visionperfumes.com.br>',
+        to: ['fabiozacari@gmail.com'],
+        subject: `👤 Novo Usuário: ${user.name || user.email}`,
+        html: `<h3>Novo usuário cadastrado</h3><p>Nome: ${user.name || 'N/A'}</p><p>Email: ${user.email}</p>`,
       });
     } catch (error) {
       console.error("[Email] Erro ao enviar email de boas-vindas:", error);
