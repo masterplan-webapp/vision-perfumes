@@ -200,7 +200,7 @@ const Header: React.FC<HeaderProps> = ({
             </div>
 
             <ul className="flex flex-col md:flex-row justify-center gap-8 py-3 text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.15em]">
-                {['Perfumes', 'Masculino', 'Feminino', 'Unissex', 'Marcas', 'Ofertas'].map((item) => (
+                {['Perfumes', 'Corpo', 'Masculino', 'Feminino', 'Unissex', 'Marcas', 'Ofertas'].map((item) => (
                 <li key={item}>
                     <a 
                     href={`#${item.toLowerCase()}`}

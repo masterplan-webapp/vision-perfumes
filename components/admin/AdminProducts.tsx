@@ -231,6 +231,35 @@ const AdminProducts: React.FC<AdminProductsProps> = ({ products, onProductUpdate
     }
   };
 
+  const handleMigrateCorpo = async () => {
+    if (!window.confirm('Deseja mover todos os "Body Splash" e "Cremes Corporais" para a categoria Corpo automaticamente?')) return;
+    setLoadingProduct(true);
+    try {
+      const keywords = ['body splash', 'creme corporal', 'body cream', 'loção corporal', 'locao corporal', 'hidratante corporal'];
+      const toUpdate = products.filter(p => 
+        keywords.some(k => p.name.toLowerCase().includes(k)) && p.category !== 'Corpo'
+      );
+
+      if (toUpdate.length === 0) {
+        addToast('Nenhum produto encontrado para migração.', 'info');
+        return;
+      }
+
+      let count = 0;
+      for (const p of toUpdate) {
+        await updateProduct(p.id, { category: 'Corpo' });
+        count++;
+      }
+      
+      await onProductUpdate();
+      addToast(`${count} produtos migrados para a categoria Corpo!`, 'success');
+    } catch (error) {
+      addToast('Erro na migração de categorias.', 'error');
+    } finally {
+      setLoadingProduct(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-center gap-4">
@@ -244,12 +273,23 @@ const AdminProducts: React.FC<AdminProductsProps> = ({ products, onProductUpdate
             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:border-accent-gold outline-none"
           />
         </div>
-        <button
-          onClick={openNew}
-          className="bg-accent-gold text-white px-6 py-2 rounded-lg font-bold hover:bg-[#c49b2d] transition-colors flex items-center gap-2 shadow-md w-full md:w-auto justify-center"
-        >
-          <Plus size={20} /> Novo Produto
-        </button>
+        <div className="flex gap-2 w-full md:w-auto">
+          <button
+            onClick={handleMigrateCorpo}
+            disabled={loadingProduct}
+            className="bg-white border border-indigo-200 text-indigo-600 px-4 py-2 rounded-lg font-bold hover:bg-indigo-50 transition-colors flex items-center gap-2 shadow-sm whitespace-nowrap"
+            title="Mover Body Splash e Cremes para categoria Corpo"
+          >
+            {loadingProduct ? <Loader2 size={18} className="animate-spin" /> : <Layers size={18} />}
+            Migrar para Corpo
+          </button>
+          <button
+            onClick={openNew}
+            className="bg-accent-gold text-white px-6 py-2 rounded-lg font-bold hover:bg-[#c49b2d] transition-colors flex items-center gap-2 shadow-sm flex-1 md:flex-initial justify-center"
+          >
+            <Plus size={20} /> Novo Produto
+          </button>
+        </div>
       </div>
 
       {filtered.length === 0 ? (
@@ -504,6 +544,8 @@ const AdminProducts: React.FC<AdminProductsProps> = ({ products, onProductUpdate
                         onChange={e => setCurrentProduct({ ...currentProduct, category: e.target.value as any })}
                         className="w-full p-2 border border-gray-300 rounded focus:border-accent-gold outline-none"
                       >
+                        <option value="Perfumes">Perfumes</option>
+                        <option value="Corpo">Corpo</option>
                         <option value="Masculino">Masculino</option>
                         <option value="Feminino">Feminino</option>
                         <option value="Unissex">Unissex</option>

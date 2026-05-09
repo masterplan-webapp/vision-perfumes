@@ -279,8 +279,9 @@ const AppContent: React.FC = () => {
                             <h2 className="font-serif text-3xl text-center font-bold text-white mb-12 tracking-widest uppercase">
                                 Explore por Categorias
                             </h2>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                            <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
                                 {[
+                                    { name: 'Corpo', icon: Package, desc: 'Cuidados' },
                                     { name: 'Masculino', icon: Shield, desc: 'Sofisticação' },
                                     { name: 'Feminino', icon: Flower2, desc: 'Elegância' },
                                     { name: 'Unissex', icon: Sparkles, desc: 'Versatilidade' },
