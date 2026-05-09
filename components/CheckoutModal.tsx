@@ -73,6 +73,33 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, cartItem
     state: ''
   });
 
+  const handleCalculateShipping = async (destZip: string) => {
+    const originZip = siteSettings?.originZip || '01001-000';
+    const frenetToken = siteSettings?.frenetToken;
+    const threshold = siteSettings?.freeShippingThreshold || 0; // Default to 0 if not set
+
+    setIsLoadingShipping(true);
+    setShippingOptions([]);
+    setSelectedShipping(null);
+    setShippingCost(0);
+    try {
+      const options = await calculateShipping(originZip, destZip, cartItems, subtotal, frenetToken, threshold);
+      setShippingOptions(options);
+      if (options.length > 0) {
+        const cheapest = options.reduce((prev, curr) => prev.price < curr.price ? prev : curr);
+        setSelectedShipping(cheapest);
+        setShippingCost(cheapest.price);
+      } else if (frenetToken) {
+         addToast('Não foi possível calcular o frete para este CEP.', 'error');
+      }
+    } catch (error) {
+      console.error(error);
+      addToast('Erro ao calcular frete.', 'error');
+    } finally {
+      setIsLoadingShipping(false);
+    }
+  };
+
   // Reset state when modal opens
   useEffect(() => {
       if (isOpen) {
@@ -280,32 +307,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, cartItem
     setStep('payment');
   };
 
-  const handleCalculateShipping = async (destZip: string) => {
-    const originZip = siteSettings?.originZip || '01001-000';
-    const frenetToken = siteSettings?.frenetToken;
-    const threshold = siteSettings?.freeShippingThreshold || 0; // Default to 0 if not set
 
-    setIsLoadingShipping(true);
-    setShippingOptions([]);
-    setSelectedShipping(null);
-    setShippingCost(0);
-    try {
-      const options = await calculateShipping(originZip, destZip, cartItems, subtotal, frenetToken, threshold);
-      setShippingOptions(options);
-      if (options.length > 0) {
-        const cheapest = options.reduce((prev, curr) => prev.price < curr.price ? prev : curr);
-        setSelectedShipping(cheapest);
-        setShippingCost(cheapest.price);
-      } else if (frenetToken) {
-         addToast('Não foi possível calcular o frete para este CEP.', 'error');
-      }
-    } catch (error) {
-      console.error(error);
-      addToast('Erro ao calcular frete.', 'error');
-    } finally {
-      setIsLoadingShipping(false);
-    }
-  };
 
   const handleFetchAddress = async () => {
     const cleanCep = address.zip.replace(/\D/g, '');

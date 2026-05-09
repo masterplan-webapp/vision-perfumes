@@ -12,15 +12,15 @@ const AdminTeam: React.FC = () => {
   const [newAdminEmail, setNewAdminEmail] = useState('');
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    load();
-  }, []);
-
   const load = async () => {
     setLoading(true);
     setAdmins(await getAdmins());
     setLoading(false);
   };
+
+  useEffect(() => {
+    load();
+  }, []);
 
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();

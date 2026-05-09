@@ -38,16 +38,6 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  useEffect(() => {
-    if (isOpen && user) {
-      loadProfile();
-      // Reset states
-      setNewPassword('');
-      setConfirmPassword('');
-      setActiveTab('personal');
-    }
-  }, [isOpen, user]);
-
   const loadProfile = async () => {
     if (!user) return;
     setLoading(true);
@@ -64,6 +54,16 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
     }
     setLoading(false);
   };
+
+  useEffect(() => {
+    if (isOpen && user) {
+      loadProfile();
+      // Reset states
+      setNewPassword('');
+      setConfirmPassword('');
+      setActiveTab('personal');
+    }
+  }, [isOpen, user]);
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();

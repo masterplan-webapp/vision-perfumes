@@ -15,10 +15,6 @@ const AdminClients: React.FC = () => {
   const [clientOrders, setClientOrders] = useState<Order[]>([]);
   const [loadingOrders, setLoadingOrders] = useState(false);
 
-  useEffect(() => {
-    load();
-  }, []);
-
   const load = async () => {
     setLoading(true);
     try {
@@ -29,6 +25,10 @@ const AdminClients: React.FC = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    load();
+  }, []);
 
   const openClient = async (client: UserProfile) => {
     setSelectedClient(client);

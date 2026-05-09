@@ -15,10 +15,6 @@ const AdminCoupons: React.FC = () => {
     isActive: true,
   });
 
-  useEffect(() => {
-    load();
-  }, []);
-
   const load = async () => {
     setLoading(true);
     try {
@@ -29,6 +25,10 @@ const AdminCoupons: React.FC = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    load();
+  }, []);
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
