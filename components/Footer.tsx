@@ -1,7 +1,11 @@
 import React from 'react';
 import { Facebook, Instagram, Twitter, Mail } from 'lucide-react';
 
-const Footer = () => {
+interface FooterProps {
+  onAboutClick?: () => void;
+}
+
+const Footer: React.FC<FooterProps> = ({ onAboutClick }) => {
   return (
     <footer className="bg-primary text-white pt-16 pb-8 mt-20 border-t border-white/10">
       <div className="container mx-auto px-4">
@@ -31,7 +35,15 @@ const Footer = () => {
           <div>
             <h4 className="font-serif text-lg font-bold text-accent-gold mb-6">Links Rápidos</h4>
             <ul className="space-y-3 text-sm text-gray-300">
-              {['Sobre Nós', 'Catálogo', 'Ofertas', 'Blog', 'Contato'].map(link => (
+              <li>
+                <button 
+                  onClick={(e) => { e.preventDefault(); onAboutClick?.(); }}
+                  className="hover:text-accent-gold transition-colors"
+                >
+                  Sobre Nós
+                </button>
+              </li>
+              {['Catálogo', 'Ofertas', 'Blog', 'Contato'].map(link => (
                 <li key={link}><a href="#" className="hover:text-accent-gold transition-colors">{link}</a></li>
               ))}
             </ul>

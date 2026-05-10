@@ -13,6 +13,7 @@ import AdminDashboard from './components/AdminDashboard';
 import CheckoutModal from './components/CheckoutModal';
 import UserOrdersModal from './components/UserOrdersModal';
 import ProfileModal from './components/ProfileModal';
+import AboutModal from './components/AboutModal';
 import { BRANDS } from './constants';
 import { Product, CartItem, FilterState, SiteSettings, ProductVariation } from './types';
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -36,6 +37,7 @@ const AppContent: React.FC = () => {
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isOrdersOpen, setIsOrdersOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [isAdminView, setIsAdminView] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
@@ -256,6 +258,7 @@ const AppContent: React.FC = () => {
         onOrdersClick={() => setIsOrdersOpen(true)}
         onWishlistClick={() => setIsWishlistOpen(true)}
         onProfileClick={() => setIsProfileOpen(true)}
+        onAboutClick={() => setIsAboutOpen(true)}
         isAdminView={isAdminView}
         topBarText={siteSettings?.topBarText}
       />
@@ -450,7 +453,7 @@ const AppContent: React.FC = () => {
         )}
       </main>
 
-      <Footer />
+      <Footer onAboutClick={() => setIsAboutOpen(true)} />
 
       <CartSidebar 
         isOpen={isCartOpen} 

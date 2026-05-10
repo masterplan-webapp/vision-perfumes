@@ -16,6 +16,7 @@ interface HeaderProps {
   onOrdersClick: () => void;
   onWishlistClick: () => void;
   onProfileClick: () => void;
+  onAboutClick: () => void;
   isAdminView: boolean;
   topBarText?: string;
 }
@@ -31,6 +32,7 @@ const Header: React.FC<HeaderProps> = ({
     onOrdersClick,
     onWishlistClick,
     onProfileClick,
+    onAboutClick,
     isAdminView,
     topBarText
 }) => {
@@ -200,6 +202,14 @@ const Header: React.FC<HeaderProps> = ({
             </div>
 
             <ul className="flex flex-col md:flex-row justify-center gap-8 py-3 text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.15em]">
+                <li>
+                    <button 
+                        onClick={(e) => { e.preventDefault(); onAboutClick(); setIsMenuOpen(false); }}
+                        className="hover:text-accent-gold transition-colors text-accent-gold"
+                    >
+                        Quem Somos
+                    </button>
+                </li>
                 {['Perfumes', 'Para o Corpo', 'Masculino', 'Feminino', 'Unissex', 'Marcas', 'Ofertas'].map((item) => (
                 <li key={item}>
                     <a 
