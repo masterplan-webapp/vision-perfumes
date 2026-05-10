@@ -497,6 +497,11 @@ const AppContent: React.FC = () => {
         onClose={() => setIsProfileOpen(false)}
       />
 
+      <AboutModal 
+        isOpen={isAboutOpen}
+        onClose={() => setIsAboutOpen(false)}
+      />
+
       <CheckoutModal 
         isOpen={isCheckoutOpen}
         onClose={() => setIsCheckoutOpen(false)}
