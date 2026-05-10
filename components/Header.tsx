@@ -203,12 +203,13 @@ const Header: React.FC<HeaderProps> = ({
 
             <ul className="flex flex-col md:flex-row justify-center gap-8 py-3 text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.15em]">
                 <li>
-                    <button 
+                    <a 
+                        href="#quem-somos"
                         onClick={(e) => { e.preventDefault(); onAboutClick(); setIsMenuOpen(false); }}
-                        className="hover:text-accent-gold transition-colors text-accent-gold"
+                        className="hover:text-accent-gold transition-colors text-accent-gold cursor-pointer uppercase"
                     >
                         Quem Somos
-                    </button>
+                    </a>
                 </li>
                 {['Perfumes', 'Para o Corpo', 'Masculino', 'Feminino', 'Unissex', 'Marcas', 'Ofertas'].map((item) => (
                 <li key={item}>
