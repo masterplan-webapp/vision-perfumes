@@ -281,7 +281,7 @@ const AppContent: React.FC = () => {
                             </h2>
                             <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
                                 {[
-                                    { name: 'Corpo', icon: Package, desc: 'Cuidados' },
+                                    { name: 'Para o Corpo', icon: Package, desc: 'Cuidados' },
                                     { name: 'Masculino', icon: Shield, desc: 'Sofisticação' },
                                     { name: 'Feminino', icon: Flower2, desc: 'Elegância' },
                                     { name: 'Unissex', icon: Sparkles, desc: 'Versatilidade' },

@@ -232,12 +232,12 @@ const AdminProducts: React.FC<AdminProductsProps> = ({ products, onProductUpdate
   };
 
   const handleMigrateCorpo = async () => {
-    if (!window.confirm('Deseja mover todos os "Body Splash" e "Cremes Corporais" para a categoria Corpo automaticamente?')) return;
+    if (!window.confirm('Deseja mover todos os "Body Splash" e "Cremes Corporais" para a categoria "Para o Corpo" automaticamente?')) return;
     setLoadingProduct(true);
     try {
       const keywords = ['body splash', 'creme corporal', 'body cream', 'loção corporal', 'locao corporal', 'hidratante corporal'];
       const toUpdate = products.filter(p => 
-        keywords.some(k => p.name.toLowerCase().includes(k)) && p.category !== 'Corpo'
+        keywords.some(k => p.name.toLowerCase().includes(k)) && p.category !== 'Para o Corpo'
       );
 
       if (toUpdate.length === 0) {
@@ -247,12 +247,12 @@ const AdminProducts: React.FC<AdminProductsProps> = ({ products, onProductUpdate
 
       let count = 0;
       for (const p of toUpdate) {
-        await updateProduct(p.id, { category: 'Corpo' });
+        await updateProduct(p.id, { category: 'Para o Corpo' });
         count++;
       }
       
       await onProductUpdate();
-      addToast(`${count} produtos migrados para a categoria Corpo!`, 'success');
+      addToast(`${count} produtos migrados para a categoria "Para o Corpo"!`, 'success');
     } catch (error) {
       addToast('Erro na migração de categorias.', 'error');
     } finally {
@@ -278,10 +278,10 @@ const AdminProducts: React.FC<AdminProductsProps> = ({ products, onProductUpdate
             onClick={handleMigrateCorpo}
             disabled={loadingProduct}
             className="bg-white border border-indigo-200 text-indigo-600 px-4 py-2 rounded-lg font-bold hover:bg-indigo-50 transition-colors flex items-center gap-2 shadow-sm whitespace-nowrap"
-            title="Mover Body Splash e Cremes para categoria Corpo"
+            title="Mover Body Splash e Cremes para categoria 'Para o Corpo'"
           >
             {loadingProduct ? <Loader2 size={18} className="animate-spin" /> : <Layers size={18} />}
-            Migrar para Corpo
+            Migrar para o Corpo
           </button>
           <button
             onClick={openNew}
@@ -545,7 +545,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({ products, onProductUpdate
                         className="w-full p-2 border border-gray-300 rounded focus:border-accent-gold outline-none"
                       >
                         <option value="Perfumes">Perfumes</option>
-                        <option value="Corpo">Corpo</option>
+                        <option value="Para o Corpo">Para o Corpo</option>
                         <option value="Masculino">Masculino</option>
                         <option value="Feminino">Feminino</option>
                         <option value="Unissex">Unissex</option>
