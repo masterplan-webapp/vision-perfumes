@@ -419,7 +419,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({ products, onProductUpdate
                       <input
                         required
                         type="text"
-                        value={currentProduct.name}
+                        value={currentProduct.name || ''}
                         onChange={e => setCurrentProduct({ ...currentProduct, name: e.target.value })}
                         className="w-full p-2 border border-gray-300 rounded focus:border-accent-gold outline-none"
                       />
@@ -433,7 +433,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({ products, onProductUpdate
                             autoFocus
                             type="text"
                             placeholder="Digite a nova marca"
-                            value={currentProduct.brand}
+                            value={currentProduct.brand || ''}
                             onChange={e => setCurrentProduct({ ...currentProduct, brand: e.target.value })}
                             className="w-full p-2 border border-gray-300 rounded focus:border-accent-gold outline-none bg-yellow-50"
                           />
@@ -451,7 +451,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({ products, onProductUpdate
                         </div>
                       ) : (
                         <select
-                          value={currentProduct.brand}
+                          value={currentProduct.brand || ''}
                           onChange={e => {
                             if (e.target.value === '__NEW__') {
                               setIsCustomBrand(true);
@@ -509,7 +509,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({ products, onProductUpdate
                             required
                             type="text"
                             placeholder="URL da imagem"
-                            value={currentProduct.image}
+                            value={currentProduct.image || ''}
                             onChange={e => setCurrentProduct({ ...currentProduct, image: e.target.value })}
                             className="w-full p-2 border border-gray-300 rounded focus:border-accent-gold outline-none"
                           />
@@ -540,7 +540,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({ products, onProductUpdate
                     <div>
                       <label className="block text-sm font-bold text-gray-700 mb-1">Categoria</label>
                       <select
-                        value={currentProduct.category}
+                        value={currentProduct.category || ''}
                         onChange={e => setCurrentProduct({ ...currentProduct, category: e.target.value as any })}
                         className="w-full p-2 border border-gray-300 rounded focus:border-accent-gold outline-none"
                       >
@@ -556,7 +556,7 @@ const AdminProducts: React.FC<AdminProductsProps> = ({ products, onProductUpdate
                       <label className="block text-sm font-bold text-gray-700 mb-1">Descrição</label>
                       <textarea
                         required
-                        value={currentProduct.description}
+                        value={currentProduct.description || ''}
                         onChange={e => setCurrentProduct({ ...currentProduct, description: e.target.value })}
                         className="w-full p-2 border border-gray-300 rounded focus:border-accent-gold outline-none h-24 resize-none"
                       />
@@ -621,20 +621,16 @@ const AdminProducts: React.FC<AdminProductsProps> = ({ products, onProductUpdate
                     <Truck size={18} /> Logística Padrão (Fallback)
                   </h3>
                   <div className="grid grid-cols-4 gap-4">
-                    {[
-                      { label: 'Peso (kg)', field: 'weight', unit: 'KG', isRoot: true },
-                    ].map(() => (
-                      <div key="weight">
-                        <label className="block text-xs font-bold text-gray-500 mb-1 uppercase">Peso (kg)</label>
-                        <input
-                          type="number"
-                          step="0.01"
-                          value={currentProduct.weight || ''}
-                          onChange={e => setCurrentProduct({ ...currentProduct, weight: parseFloat(e.target.value) })}
-                          className="w-full p-2 bg-white border border-gray-300 rounded text-sm"
-                        />
-                      </div>
-                    ))}
+                    <div>
+                      <label className="block text-xs font-bold text-gray-500 mb-1 uppercase">Peso (kg)</label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={currentProduct.weight || ''}
+                        onChange={e => setCurrentProduct({ ...currentProduct, weight: parseFloat(e.target.value) })}
+                        className="w-full p-2 bg-white border border-gray-300 rounded text-sm"
+                      />
+                    </div>
                     {(['width', 'height', 'depth'] as const).map((dim, i) => (
                       <div key={dim}>
                         <label className="block text-xs font-bold text-gray-500 mb-1 uppercase">

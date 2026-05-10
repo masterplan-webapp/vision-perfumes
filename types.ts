@@ -24,7 +24,7 @@ export interface Product {
   oldPrice?: number;
   image: string;
   images?: string[]; // Galeria de imagens adicionais
-  category: 'Masculino' | 'Feminino' | 'Unissex' | 'Para o Corpo';
+  category: 'Perfumes' | 'Masculino' | 'Feminino' | 'Unissex' | 'Para o Corpo';
   description: string;
   rating: number;
   reviews: number;
