@@ -324,7 +324,9 @@ const AppContent: React.FC = () => {
                         value={filters.brand}
                     >
                         <option value="" className="bg-gray-charcoal">Todas as Marcas</option>
-                        {BRANDS.map(b => <option key={b} value={b} className="bg-gray-charcoal">{b}</option>)}
+                        {Array.from(new Set(products.map(p => p.brand))).sort().map(b => (
+                            <option key={b} value={b} className="bg-gray-charcoal">{b}</option>
+                        ))}
                     </select>
 
                     <select 

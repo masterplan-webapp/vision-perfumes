@@ -153,4 +153,15 @@ export const PRODUCTS: Product[] = [
   }
 ];
 
-export const BRANDS = ['Chanel', 'Dior', 'Giorgio Armani', 'Versace', 'Lancôme', 'Calvin Klein'];
+export const BRANDS = [
+  'Lattafa', 
+  'Afnan', 
+  'Ard Al Zaafaran', 
+  'Maison Alhambra', 
+  'Al Haramain', 
+  'Armaf', 
+  'Rasasi', 
+  'Paris Corner', 
+  'Fragrance World', 
+  'Swiss Arabian'
+];
