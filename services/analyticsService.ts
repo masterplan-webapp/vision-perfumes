@@ -41,6 +41,8 @@ export const trackViewItemList = (items: any[], category?: string) => {
 export const trackViewItem = (item: any) => {
   pushToDataLayer('view_item', {
     ecommerce: {
+      currency: 'BRL',
+      value: item.price,
       items: [{
         item_id: item.id,
         item_name: item.name,
@@ -56,6 +58,8 @@ export const trackViewItem = (item: any) => {
 export const trackAddToCart = (item: any, quantity: number) => {
   pushToDataLayer('add_to_cart', {
     ecommerce: {
+      currency: 'BRL',
+      value: item.price * quantity,
       items: [{
         item_id: item.id,
         item_name: item.name,
@@ -70,13 +74,17 @@ export const trackAddToCart = (item: any, quantity: number) => {
 };
 
 export const trackBeginCheckout = (cart: any[]) => {
+  const total = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
   pushToDataLayer('begin_checkout', {
     ecommerce: {
+      currency: 'BRL',
+      value: total,
       items: cart.map(item => ({
         item_id: item.id,
         item_name: item.name,
         item_brand: item.brand,
         item_category: item.category,
+        item_variant: item.selectedVariation?.size,
         price: item.price,
         quantity: item.quantity
       }))
