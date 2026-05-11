@@ -59,7 +59,10 @@ const AdminProducts: React.FC<AdminProductsProps> = ({ products, onProductUpdate
     setCurrentProduct({
       ...product,
       images: product.images || [],
-      variations: product.variations || [],
+      variations: (product.variations || []).map(v => ({
+        ...v,
+        dimensions: v.dimensions || { width: 0, height: 0, depth: 0 }
+      })),
       dimensions: product.dimensions || { width: 0, height: 0, depth: 0 },
       weight: product.weight || 0,
     });
@@ -398,8 +401,8 @@ const AdminProducts: React.FC<AdminProductsProps> = ({ products, onProductUpdate
 
       {/* Edit / Create Modal */}
       {isEditing && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4">
-          <div className="bg-white rounded-t-2xl sm:rounded-2xl w-full max-w-4xl max-h-[95vh] overflow-y-auto shadow-2xl">
+        <div id="admin-product-modal" className="fixed inset-0 bg-black/80 backdrop-blur-md z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-hidden">
+          <div className="bg-white rounded-t-2xl sm:rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl border border-white/20 animate-in fade-in zoom-in duration-200">
             <form onSubmit={handleSave}>
               <div className="sticky top-0 bg-white border-b border-gray-100 p-6 flex justify-between items-center z-10">
                 <h2 className="font-serif text-2xl font-bold text-primary">
