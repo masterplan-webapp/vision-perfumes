@@ -23,7 +23,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, onClick
   return (
     <div className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-accent-gold/20 flex flex-col h-full">
       {/* Image Container */}
-      <div className="relative pt-[100%] bg-gray-light overflow-hidden cursor-pointer" onClick={() => { trackViewItem(product); onClick(product); }}>
+      <div className="relative pt-[100%] bg-gray-light overflow-hidden cursor-pointer" onClick={() => onClick(product)}>
         <img 
           src={product.image} 
           alt={product.name} 
@@ -61,7 +61,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, onClick
         </div>
         <h3 
           className="font-serif text-lg font-bold text-primary mb-2 cursor-pointer hover:text-accent-gold transition-colors line-clamp-1"
-          onClick={() => { trackViewItem(product); onClick(product); }}
+          onClick={() => onClick(product)}
         >
           {product.name}
         </h3>
