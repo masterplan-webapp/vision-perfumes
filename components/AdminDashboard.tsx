@@ -63,8 +63,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ products, onProductUpda
         </div>
       </div>
 
-      {/* Animated Content */}
-      <div key={activeTab} className="animate-tab-enter container mx-auto px-3 md:px-4 py-6 md:py-8">
+      {/* Content Container (Animation removed to prevent modal clipping issues) */}
+      <div key={activeTab} className="container mx-auto px-3 md:px-4 py-6 md:py-8">
         {activeTab === 'metrics'  && <AdminMetrics products={products} orders={orders} />}
         {activeTab === 'products' && <AdminProducts products={products} onProductUpdate={onProductUpdate} />}
         {activeTab === 'orders'   && (

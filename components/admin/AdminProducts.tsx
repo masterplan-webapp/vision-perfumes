@@ -401,8 +401,11 @@ const AdminProducts: React.FC<AdminProductsProps> = ({ products, onProductUpdate
 
       {/* Edit / Create Modal */}
       {isEditing && (
-        <div id="admin-product-modal" className="fixed inset-0 bg-black/80 backdrop-blur-md z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-hidden">
-          <div className="bg-white rounded-t-2xl sm:rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl border border-white/20 animate-in fade-in zoom-in duration-200">
+        <div id="admin-product-modal" className="fixed inset-0 bg-black/90 backdrop-blur-md z-[10000] flex items-center justify-center p-4">
+          <div 
+            className="bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl relative"
+            style={{ minHeight: '300px', backgroundColor: 'white', zIndex: 10001 }}
+          >
             <form onSubmit={handleSave}>
               <div className="sticky top-0 bg-white border-b border-gray-100 p-6 flex justify-between items-center z-10">
                 <h2 className="font-serif text-2xl font-bold text-primary">
