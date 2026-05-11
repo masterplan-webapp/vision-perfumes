@@ -168,7 +168,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, cartItem
 
   const handleCreateOrder = async () => {
     // Validate Card if selected
-    if ((paymentMethod === 'credit_card' || paymentMethod === 'debit_card') && finalTotal > 0) {
+    if (paymentMethod === 'credit_card' && finalTotal > 0) {
         if (!cardNumber || !cardExpiry || !cardCvv || !cardName) {
             addToast("Preencha todos os dados do cartão.", "error");
             return;
@@ -190,7 +190,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, cartItem
           cartItems,
           address,
           siteSettings?.pagarmePublicKey || '',
-          paymentMethod === 'credit_card' || paymentMethod === 'debit_card' ? {
+          paymentMethod === 'credit_card' ? {
               number: cardNumber,
               holderName: cardName,
               expirationDate: cardExpiry,
@@ -276,7 +276,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, cartItem
       setStep('success');
       addToast('Pedido realizado com sucesso!', 'success');
       
-      if (paymentMethod === 'credit_card' || paymentMethod === 'debit_card') {
+      if (paymentMethod === 'credit_card') {
           setTimeout(() => {
             onSuccess();
           }, 3000);
@@ -532,10 +532,9 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, cartItem
 
               {/* Payment Method Selection */}
               {finalTotal > 0 && (
-                <div className="flex gap-2 mb-4 overflow-x-auto pb-2 scrollbar-hide">
+                <div className="flex gap-2 mb-4">
                     {[
-                        { id: 'credit_card', label: 'Crédito', icon: CreditCard },
-                        { id: 'debit_card', label: 'Débito', icon: CreditCard },
+                        { id: 'credit_card', label: 'Cartão', icon: CreditCard },
                         { id: 'pix', label: 'Pix', icon: QrCode },
                         { id: 'boleto', label: 'Boleto', icon: Barcode },
                     ].map(method => (
@@ -555,8 +554,8 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, cartItem
                 </div>
               )}
 
-              {/* Credit/Debit Card Form */}
-              {(paymentMethod === 'credit_card' || paymentMethod === 'debit_card') && finalTotal > 0 && (
+              {/* Credit Card Form */}
+              {paymentMethod === 'credit_card' && finalTotal > 0 && (
                 <div className="space-y-4 animate-fade-in">
                     <div className="relative">
                         <CreditCard className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
@@ -604,7 +603,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, cartItem
                   <button onClick={() => setStep('address')} className="flex-1 py-3 border border-gray-300 rounded-lg font-bold text-gray-600 hover:bg-gray-50">Voltar</button>
                   <button 
                     onClick={handleCreateOrder}
-                    disabled={loading || (finalTotal > 0 && (paymentMethod === 'credit_card' || paymentMethod === 'debit_card') && (!isValidCardNumber(cardNumber) || !cardExpiry || !cardCvv || !cardName))}
+                    disabled={loading || (finalTotal > 0 && paymentMethod === 'credit_card' && (!isValidCardNumber(cardNumber) || !cardExpiry || !cardCvv || !cardName))}
                     className="flex-1 bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 transition-colors flex justify-center items-center gap-2 shadow-lg shadow-green-600/20 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {loading ? <Loader2 className="animate-spin" /> : (finalTotal > 0 ? `Pagar R$ ${finalTotal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}` : 'Finalizar Pedido Grátis')}
@@ -647,7 +646,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, cartItem
               )}
 
               <button onClick={() => onSuccess()} className="bg-primary text-white px-8 py-3 rounded-full font-bold hover:bg-accent-gold transition-colors shadow-lg">
-                {(paymentMethod === 'credit_card' || paymentMethod === 'debit_card') ? 'Continuar Comprando' : 'Finalizar'}
+                {paymentMethod === 'credit_card' ? 'Continuar Comprando' : 'Finalizar'}
               </button>
             </div>
           )}
