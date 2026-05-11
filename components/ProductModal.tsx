@@ -5,6 +5,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Star, Minus, Plus, ShoppingBag } from 'lucide-react';
 import { Product, ProductVariation } from '../types';
+import { trackViewItem } from '../services/analyticsService';
 
 interface ProductModalProps {
   product: Product | null;
@@ -18,13 +19,18 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onAddToCa
   const [activeImage, setActiveImage] = useState<string>('');
 
   useEffect(() => {
-    if (product?.variations && product.variations.length > 0) {
-        setSelectedVariation(product.variations[0]);
-    } else {
-        setSelectedVariation(undefined);
+    if (product) {
+        if (product.variations && product.variations.length > 0) {
+            setSelectedVariation(product.variations[0]);
+        } else {
+            setSelectedVariation(undefined);
+        }
+        setQuantity(1);
+        setActiveImage(product.image || '');
+        
+        // Track view_item event when modal opens
+        trackViewItem(product);
     }
-    setQuantity(1);
-    setActiveImage(product?.image || '');
   }, [product]);
 
   if (!product) return null;

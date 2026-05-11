@@ -46,6 +46,7 @@ export const trackViewItem = (item: any) => {
         item_name: item.name,
         item_brand: item.brand,
         item_category: item.category,
+        item_variant: item.variation?.size || item.selectedVariation?.size,
         price: item.price
       }]
     }
@@ -60,6 +61,7 @@ export const trackAddToCart = (item: any, quantity: number) => {
         item_name: item.name,
         item_brand: item.brand,
         item_category: item.category,
+        item_variant: item.variation?.size || item.selectedVariation?.size,
         price: item.price,
         quantity: quantity
       }]

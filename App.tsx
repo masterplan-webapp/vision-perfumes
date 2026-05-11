@@ -153,8 +153,9 @@ const AppContent: React.FC = () => {
       }];
     });
     
-    // Track Add to Cart
-    trackAddToCart(product, quantity);
+    // Track Add to Cart with selected variation and its price
+    const priceToTrack = variation ? variation.price : product.price;
+    trackAddToCart({ ...product, price: priceToTrack, variation }, quantity);
     
     setIsCartOpen(true);
   };
