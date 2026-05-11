@@ -163,7 +163,12 @@ export const processPayment = async (
         }
 
         // ── Enviar ao backend (Cloud Function) ────────────────────
-        const response = await fetch(`${backendUrl}/createOrder`, {
+        // Ajuste para Firebase V2 (Cloud Run) onde a URL pode ser direta
+        const targetUrl = backendUrl.includes('a.run.app') || backendUrl.endsWith('/createOrder') 
+          ? backendUrl 
+          : `${backendUrl}/createOrder`;
+
+        const response = await fetch(targetUrl, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

@@ -50,7 +50,11 @@ export const calculateShipping = async (
         // ── Cloud Function Proxy (preferred) ──────────────────────
         console.log("[Frete] Calculando via Cloud Function proxy...");
 
-        const response = await fetch(`${backendUrl}/calculateShipping`, {
+        const targetUrl = backendUrl.includes('a.run.app') || backendUrl.endsWith('/calculateShipping') 
+          ? backendUrl 
+          : `${backendUrl}/calculateShipping`;
+
+        const response = await fetch(targetUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

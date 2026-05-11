@@ -297,6 +297,27 @@ exports.createOrder = onRequest(
             },
           },
         });
+      } else if (method === "debit_card") {
+        const billingAddr = billingAddress || {};
+        orderPayload.payments.push({
+          payment_method: "debit_card",
+          debit_card: {
+            authentication: {
+              type: "none"
+            },
+            card_token: cardToken,
+            card: {
+              billing_address: {
+                line_1: `${billingAddr.number || "SN"}, ${billingAddr.street || "Rua"}, ${billingAddr.neighborhood || "Bairro"}`,
+                line_2: billingAddr.complement || "",
+                zip_code: cleanDocument(billingAddr.zip),
+                city: billingAddr.city || "São Paulo",
+                state: billingAddr.state || "SP",
+                country: "BR",
+              },
+            },
+          },
+        });
       } else if (method === "pix") {
         orderPayload.payments.push({
           payment_method: "pix",
