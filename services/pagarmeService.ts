@@ -3,7 +3,7 @@
 import { Address, CartItem } from "../types";
 import { getSiteSettings } from "./settingsService";
 
-export type PaymentMethod = 'credit_card' | 'pix' | 'boleto';
+export type PaymentMethod = 'credit_card' | 'debit_card' | 'pix' | 'boleto';
 
 // ─── Interfaces ────────────────────────────────────────────────────────────────
 
@@ -218,7 +218,7 @@ export const processPayment = async (
   // Simular delay de rede
   await new Promise(resolve => setTimeout(resolve, 2000));
 
-  if (method === 'credit_card') {
+  if (method === 'credit_card' || method === 'debit_card') {
     // Validations
     if (!cardData || !isValidCardNumber(cardData.number)) {
       return { success: false, error: "Número de cartão inválido." };
@@ -236,7 +236,7 @@ export const processPayment = async (
 
     return { 
       success: true, 
-      transactionId: `sim_cc_${Date.now()}`,
+      transactionId: `sim_${method === 'credit_card' ? 'cc' : 'dc'}_${Date.now()}`,
       cardBrand: detectCardBrand(cardData.number),
       cardLastDigits: cardData.number.replace(/\D/g, "").slice(-4),
     };
