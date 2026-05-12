@@ -581,11 +581,9 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, cartItem
                       >
                         {Array.from({ length: 12 }, (_, i) => i + 1).map(n => {
                           const installmentValue = finalTotal / n;
-                          const isFree = n <= 3;
                           return (
                             <option key={n} value={n}>
                               {n}x de R$ {installmentValue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                              {isFree ? ' sem juros' : ''}
                             </option>
                           );
                         })}
