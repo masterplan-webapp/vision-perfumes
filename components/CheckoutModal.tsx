@@ -62,6 +62,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, cartItem
   const [cardExpiry, setCardExpiry] = useState('');
   const [cardCvv, setCardCvv] = useState('');
   const [cardName, setCardName] = useState('');
+  const [installments, setInstallments] = useState(1);
 
   const [address, setAddress] = useState<Address>({
     zip: '',
@@ -108,6 +109,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, cartItem
           setShippingOptions([]);
           setSelectedShipping(null);
           setPaymentMethod('credit_card');
+          setInstallments(1);
           setPaymentResultData(null);
           setCardNumber('');
           setCardExpiry('');
@@ -195,7 +197,8 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, cartItem
               holderName: cardName,
               expirationDate: cardExpiry,
               cvv: cardCvv
-          } : undefined
+          } : undefined,
+          installments
       );
 
       if (!paymentResult.success) {
@@ -567,6 +570,27 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, cartItem
                         <input type="text" placeholder="CVC" value={cardCvv} onChange={e => setCardCvv(e.target.value.replace(/\D/g, '').slice(0,4))} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-accent-gold outline-none" />
                     </div>
                     <input type="text" placeholder="Nome no Cartão" value={cardName} onChange={e => setCardName(e.target.value.toUpperCase())} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-accent-gold outline-none uppercase" />
+                    
+                    {/* Parcelas */}
+                    <div>
+                      <label className="block text-xs font-medium text-gray-700 mb-1">Parcelas</label>
+                      <select
+                        value={installments}
+                        onChange={e => setInstallments(Number(e.target.value))}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-accent-gold outline-none bg-white appearance-none cursor-pointer"
+                      >
+                        {Array.from({ length: 12 }, (_, i) => i + 1).map(n => {
+                          const installmentValue = finalTotal / n;
+                          const isFree = n <= 3;
+                          return (
+                            <option key={n} value={n}>
+                              {n}x de R$ {installmentValue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                              {isFree ? ' sem juros' : ''}
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </div>
                 </div>
               )}
 

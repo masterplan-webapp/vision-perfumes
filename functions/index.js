@@ -138,7 +138,7 @@ async function createFrenetPostagem(order, orderId) {
     console.log(`[Frenet] Gerando etiqueta para Pedido #${orderId.slice(0, 8)}...`);
 
     // 3. Chamar API Frenet
-    const response = await fetch("https://api.frenet.com.br/shipping/order", {
+    const response = await fetch("http://api.frenet.com.br/shipping/order", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -150,6 +150,7 @@ async function createFrenetPostagem(order, orderId) {
     if (!response.ok) {
       const errorText = await response.text();
       console.error(`[Frenet] Erro na API (${response.status}):`, errorText);
+      console.log("[Frenet] Payload enviado:", JSON.stringify(payload));
       return null;
     }
 

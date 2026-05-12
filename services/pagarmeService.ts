@@ -134,6 +134,7 @@ export const processPayment = async (
   billingAddress: Address,
   publicKey: string,
   cardData?: PagarmeCardData,
+  installments: number = 1,
 ): Promise<PaymentResponse> => {
   
   // 1. Verificar se existe uma URL de backend configurada
@@ -176,6 +177,7 @@ export const processPayment = async (
           body: JSON.stringify({
             amount: Math.round(amount * 100), // Converter para centavos
             method,
+            installments: method === 'credit_card' ? installments : 1,
             customer: {
               name: customer.name,
               email: customer.email,
