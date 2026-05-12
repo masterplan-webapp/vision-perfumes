@@ -150,7 +150,7 @@ const AdminSettings: React.FC<AdminSettingsProps> = ({ onProductUpdate }) => {
         {/* Logistics */}
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
           <h3 className="font-bold text-lg mb-4 flex items-center gap-2 text-primary">
-            <Truck size={20} /> Logística (Frenet)
+            <Truck size={20} /> Logística (Melhor Envio)
           </h3>
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -166,17 +166,31 @@ const AdminSettings: React.FC<AdminSettingsProps> = ({ onProductUpdate }) => {
                 <p className="text-xs text-gray-400 mt-1">Ponto de partida para cálculo de frete.</p>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Token de Acesso Frenet</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Token de Acesso Melhor Envio</label>
                 <input
                   type="text"
-                  placeholder="Cole o token da Frenet aqui"
-                  value={settings.frenetToken || ''}
-                  onChange={e => setSettings({ ...settings, frenetToken: e.target.value })}
+                  placeholder="Cole o Bearer Token aqui"
+                  value={settings.melhorEnvioToken || ''}
+                  onChange={e => setSettings({ ...settings, melhorEnvioToken: e.target.value })}
                   className="w-full p-3 border border-gray-300 rounded-lg focus:border-accent-gold outline-none font-mono text-sm"
                 />
-                <p className="text-xs text-gray-400 mt-1">Chave de API para cálculo real de frete.</p>
+                <p className="text-xs text-gray-400 mt-1">OAuth2 Bearer Token gerado no painel do Melhor Envio.</p>
               </div>
             </div>
+            
+            <div className="flex items-center gap-3 mt-4">
+              <input
+                type="checkbox"
+                id="sandbox-mode"
+                checked={settings.melhorEnvioSandbox ?? true}
+                onChange={e => setSettings({ ...settings, melhorEnvioSandbox: e.target.checked })}
+                className="w-5 h-5 accent-accent-gold rounded cursor-pointer"
+              />
+              <label htmlFor="sandbox-mode" className="text-sm font-medium text-gray-700 cursor-pointer">
+                Usar Ambiente de Testes (Sandbox)
+              </label>
+            </div>
+
             <div className="pt-4 border-t border-gray-100">
               <label className="block text-sm font-medium text-gray-700 mb-1">Valor Mínimo para Frete Grátis (R$)</label>
               <input

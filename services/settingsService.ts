@@ -28,7 +28,8 @@ const DEFAULT_SETTINGS: SiteSettings = {
   topBarText: "✨ Frete Grátis para compras acima de R$ 300 | Até 3x sem juros no cartão",
   slides: DEFAULT_SLIDES,
   originZip: "01001-000",
-  frenetToken: "AB341B5DR56D1R438AR905ER61598F036D68",
+  melhorEnvioToken: "",
+  melhorEnvioSandbox: true,
   pagarmePublicKey: "pk_test_2m13QQ4h4sV23ALb",
   apiBaseUrl: "https://createorder-5xrvijfgfq-uc.a.run.app", // Novo padrão V2
   freeShippingThreshold: 300
@@ -66,7 +67,8 @@ export const getSiteSettings = async (): Promise<SiteSettings> => {
       settings = {
         topBarText: data.topBarText ?? settings.topBarText,
         originZip: data.originZip ?? settings.originZip,
-        frenetToken: data.frenetToken ?? settings.frenetToken,
+        melhorEnvioToken: data.melhorEnvioToken ?? settings.melhorEnvioToken,
+        melhorEnvioSandbox: data.melhorEnvioSandbox ?? settings.melhorEnvioSandbox,
         pagarmePublicKey: data.pagarmePublicKey ?? settings.pagarmePublicKey,
         apiBaseUrl: data.apiBaseUrl ?? settings.apiBaseUrl,
         freeShippingThreshold: data.freeShippingThreshold ?? settings.freeShippingThreshold,
@@ -114,7 +116,8 @@ export const updateSiteSettings = async (settings: SiteSettings): Promise<void> 
   const cleanSettings: SiteSettings = {
     topBarText: settings.topBarText || "",
     originZip: settings.originZip || "",
-    frenetToken: settings.frenetToken || "",
+    melhorEnvioToken: settings.melhorEnvioToken || "",
+    melhorEnvioSandbox: settings.melhorEnvioSandbox ?? true,
     pagarmePublicKey: settings.pagarmePublicKey || "",
     apiBaseUrl: settings.apiBaseUrl || "",
     freeShippingThreshold: Number(settings.freeShippingThreshold) || 0,

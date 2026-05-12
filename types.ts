@@ -129,7 +129,7 @@ export interface Order {
   shippingAddress: Address;
   trackingCode?: string;
   paymentMethod?: string;
-  frenetOrderId?: string;
+  shippingLabelId?: string;
 }
 
 export interface HeroSlide {
@@ -145,7 +145,8 @@ export interface SiteSettings {
   topBarText: string;
   slides: HeroSlide[];
   originZip?: string;
-  frenetToken?: string; // Token de integração Frenet
+  melhorEnvioToken?: string; // Token de integração Melhor Envio
+  melhorEnvioSandbox?: boolean; // Usar ambiente de Sandbox do Melhor Envio
   pagarmePublicKey?: string; // Chave pública Pagar.me
   apiBaseUrl?: string; // URL da Cloud Function (Backend)
   heroTitle?: string;

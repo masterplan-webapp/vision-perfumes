@@ -78,96 +78,172 @@ function parsePhone(phoneStr) {
 }
 
 /**
- * Cria uma postagem (pedido) na Frenet para gerar a etiqueta
+ * Cria uma etiqueta (pedido) no Melhor Envio
  */
-async function createFrenetPostagem(order, orderId) {
+async function createShippingLabel(order, orderId) {
   try {
-    // 1. Buscar configurações globais (Token e CEP de Origem)
     const settingsSnap = await db.collection("settings").doc("global").get();
     if (!settingsSnap.exists) {
-      console.error("[Frenet] Configurações globais não encontradas.");
+      console.error("[MelhorEnvio] Configurações globais não encontradas.");
       return null;
     }
     const settings = settingsSnap.data();
-    const token = settings.frenetToken;
-    const originZip = settings.originZip || "01001-000";
+    const token = settings.melhorEnvioToken;
+    const sandbox = settings.melhorEnvioSandbox ?? true;
 
     if (!token) {
-      console.error("[Frenet] Token não configurado.");
+      console.error("[MelhorEnvio] Token não configurado.");
       return null;
     }
 
     if (!order.shippingServiceCode) {
-      console.warn(`[Frenet] Pedido ${orderId} sem shippingServiceCode. Pulando etiqueta.`);
+      console.warn(`[MelhorEnvio] Pedido ${orderId} sem shippingServiceCode. Pulando etiqueta.`);
       return null;
     }
 
-    // 2. Montar payload de postagem
+    const baseUrl = sandbox ? "https://sandbox.melhorenvio.com.br" : "https://melhorenvio.com.br";
+
+    // 1. Buscar dados do remetente na própria conta do Melhor Envio
+    let fromData;
+    try {
+        const meRes = await fetch(`${baseUrl}/api/v2/me`, {
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Accept": "application/json",
+                "User-Agent": "Vision Perfumes (contato@visionperfumes.com.br)"
+            }
+        });
+        const meProfile = await meRes.json();
+        
+        fromData = {
+            name: meProfile.name || settings.siteName || "Vision Perfumes",
+            phone: (meProfile.phone || {}).phone || "11999999999",
+            email: meProfile.email || settings.siteEmail || "contato@visionperfumes.com.br",
+            document: meProfile.document || "",
+            address: (meProfile.address || {}).address || "Rua Desconhecida",
+            number: (meProfile.address || {}).number || "S/N",
+            district: (meProfile.address || {}).district || "Centro",
+            city: (meProfile.address || {}).city?.city || "São Paulo",
+            state_abbr: (meProfile.address || {}).city?.state?.state_abbr || "SP",
+            country_id: "BR",
+            postal_code: (meProfile.address || {}).postal_code || settings.originZip || "01001000"
+        };
+        
+        console.log("[MelhorEnvio] Dados do remetente obtidos:", fromData.name, fromData.document);
+    } catch (e) {
+        console.error("[MelhorEnvio] Erro ao buscar perfil:", e);
+        // Fallback for development only
+        fromData = {
+            name: "Vision Perfumes",
+            phone: "11999999999",
+            email: "contato@visionperfumes.com.br",
+            document: "00000000000",
+            address: "Av Paulista",
+            number: "1000",
+            district: "Bela Vista",
+            city: "São Paulo",
+            state_abbr: "SP",
+            country_id: "BR",
+            postal_code: "01310100"
+        };
+    }
+
+    // 2. Montar payload do carrinho
     const payload = {
-      Seller: {
-        ZipCode: originZip.replace(/\D/g, ""),
-      },
-      Recipient: {
-        ZipCode: order.shippingAddress.zip.replace(/\D/g, ""),
-        Address: order.shippingAddress.street,
-        Number: order.shippingAddress.number,
-        Complement: order.shippingAddress.complement || "",
-        District: order.shippingAddress.neighborhood,
-        City: order.shippingAddress.city,
-        State: order.shippingAddress.state,
-        Country: "BR",
-        Email: order.customerEmail,
-        CellPhone: order.customerPhone.replace(/\D/g, ""),
-        Document: order.customerDocument.replace(/\D/g, ""),
-      },
-      ShippingServiceCode: order.shippingServiceCode,
-      OrderNumber: orderId,
-      Value: order.total,
-      Products: order.items.map(item => ({
-        Quantity: item.quantity,
-        SKU: item.id,
-        Description: item.name,
-        UnitValue: item.price,
-        Weight: item.weight || 0.3,
-        Length: item.dimensions?.depth || 15,
-        Width: item.dimensions?.width || 15,
-        Height: item.dimensions?.height || 10,
-      }))
+        service: order.shippingServiceCode,
+        from: fromData,
+        to: {
+            name: order.customerName,
+            phone: order.customerPhone.replace(/\D/g, ""),
+            email: order.customerEmail,
+            document: order.customerDocument.replace(/\D/g, ""),
+            address: order.shippingAddress.street,
+            complement: order.shippingAddress.complement || "",
+            number: order.shippingAddress.number,
+            district: order.shippingAddress.neighborhood,
+            city: order.shippingAddress.city,
+            state_abbr: order.shippingAddress.state,
+            country_id: "BR",
+            postal_code: order.shippingAddress.zip.replace(/\D/g, "")
+        },
+        products: order.items.map(item => ({
+            name: item.name,
+            quantity: item.quantity,
+            unitary_value: item.price
+        })),
+        volumes: [{
+            height: 10,
+            width: 15,
+            length: 15,
+            weight: order.items.reduce((acc, item) => acc + (item.weight || 0.3) * item.quantity, 0)
+        }],
+        options: {
+            insurance_value: order.total,
+            receipt: false,
+            own_hand: false,
+            reverse: false,
+            non_commercial: true
+        }
     };
 
-    console.log(`[Frenet] Gerando etiqueta para Pedido #${orderId.slice(0, 8)}...`);
+    console.log(`[MelhorEnvio] Inserindo no carrinho: Pedido #${orderId.slice(0, 8)}...`);
 
-    // 3. Chamar API Frenet
-    const response = await fetch("http://api.frenet.com.br/shipping/order", {
-      method: "POST",
-      headers: {
+    const headers = {
+        "Accept": "application/json",
         "Content-Type": "application/json",
-        "token": token,
-      },
-      body: JSON.stringify(payload),
+        "Authorization": `Bearer ${token}`,
+        "User-Agent": "Vision Perfumes (contato@visionperfumes.com.br)"
+    };
+
+    // 2. Chamar API Melhor Envio (Inserir no Carrinho)
+    const cartRes = await fetch(`${baseUrl}/api/v2/me/cart`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(payload)
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error(`[Frenet] Erro na API (${response.status}):`, errorText);
-      console.log("[Frenet] Payload enviado:", JSON.stringify(payload));
-      return null;
+    if (!cartRes.ok) {
+        const errText = await cartRes.text();
+        console.error(`[MelhorEnvio] Erro ao inserir no carrinho (${cartRes.status}):`, errText);
+        return null;
     }
 
-    const data = await response.json();
-    console.log(`[Frenet] Etiqueta gerada com sucesso: ${data.OrderId || "OK"}`);
-    
-    // 4. Salvar o ID da Frenet no pedido para consulta posterior
-    if (data.OrderId) {
-      await db.collection("orders").doc(orderId).update({
-        frenetOrderId: data.OrderId,
-        updatedAt: new Date().toISOString()
-      });
+    const cartData = await cartRes.json();
+    const orderIdME = cartData.id;
+
+    // 3. Checkout da Etiqueta
+    const checkoutRes = await fetch(`${baseUrl}/api/v2/me/shipment/checkout`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ orders: [orderIdME] })
+    });
+
+    if (!checkoutRes.ok) {
+        console.error(`[MelhorEnvio] Erro no checkout:`, await checkoutRes.text());
+        return null;
+    }
+
+    // 4. Gerar a Etiqueta
+    const generateRes = await fetch(`${baseUrl}/api/v2/me/shipment/generate`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ orders: [orderIdME] })
+    });
+
+    if (!generateRes.ok) {
+         console.error(`[MelhorEnvio] Erro ao gerar:`, await generateRes.text());
     }
     
-    return data;
+    // 5. Salvar o ID no pedido
+    await db.collection("orders").doc(orderId).update({
+      shippingLabelId: orderIdME,
+      updatedAt: new Date().toISOString()
+    });
+    
+    console.log(`[MelhorEnvio] Etiqueta finalizada com sucesso: ${orderIdME}`);
+    return cartData;
   } catch (error) {
-    console.error("[Frenet] Erro ao criar postagem:", error.message);
+    console.error("[MelhorEnvio] Erro ao criar postagem:", error.message);
     return null;
   }
 }
@@ -474,15 +550,8 @@ exports.pagarmeWebhook = onRequest(
 // ─── calculateShipping ─────────────────────────────────────────────────────────
 
 /**
- * Proxy server-side para a API da Frenet (cálculo de frete).
- * Elimina problemas de CORS que ocorrem ao chamar a Frenet diretamente do browser.
- * 
- * Recebe do frontend:
- *   - originZip: CEP de origem
- *   - destinationZip: CEP de destino
- *   - items: [{ Weight, Length, Height, Width, Quantity, SKU, Category }]
- *   - totalValue: valor total do pedido
- *   - token: token da Frenet
+ * Proxy server-side para a API do Melhor Envio (cálculo de frete).
+ * Elimina problemas de CORS.
  */
 exports.calculateShipping = onRequest(
   {
@@ -501,9 +570,8 @@ exports.calculateShipping = onRequest(
     }
 
     try {
-      const { originZip, destinationZip, items, totalValue, token } = req.body;
+      const { originZip, destinationZip, items, totalValue, token, sandbox } = req.body;
 
-      // Validações
       if (!originZip || !destinationZip || !items || !token) {
         res.status(400).json({
           success: false,
@@ -520,44 +588,51 @@ exports.calculateShipping = onRequest(
         return;
       }
 
-      // Montar payload Frenet
-      const frenetPayload = {
-        SellerCEP: cepOrigin,
-        RecipientCEP: cepDest,
-        ShipmentInvoiceValue: totalValue,
-        ShippingItemArray: items,
+      const baseUrl = sandbox ? "https://sandbox.melhorenvio.com.br" : "https://melhorenvio.com.br";
+      const apiUrl = `${baseUrl}/api/v2/me/shipment/calculate`;
+
+      const payload = {
+        from: { postal_code: cepOrigin },
+        to: { postal_code: cepDest },
+        products: items.map(item => ({
+            id: item.id,
+            weight: item.weight,
+            width: item.width,
+            height: item.height,
+            length: item.length,
+            insurance_value: item.insurance_value,
+            quantity: item.quantity
+        }))
       };
 
-      console.log(`[Frenet] Cotação: ${cepOrigin} → ${cepDest}, R$ ${totalValue}`);
+      console.log(`[MelhorEnvio] Cotação: ${cepOrigin} -> ${cepDest}`);
 
-      // Chamar API Frenet (server-side, sem CORS)
-      const response = await fetch("https://api.frenet.com.br/shipping/quote", {
+      const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
+          "Accept": "application/json",
           "Content-Type": "application/json",
-          "token": token,
+          "Authorization": `Bearer ${token}`,
+          "User-Agent": "Vision Perfumes (contato@visionperfumes.com.br)"
         },
-        body: JSON.stringify(frenetPayload),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error(`[Frenet] API Error ${response.status}:`, errorText);
-        throw new Error(`Frenet API error: ${response.status}`);
+        console.error(`[MelhorEnvio] API Error ${response.status}:`, errorText);
+        throw new Error(`Melhor Envio API error: ${response.status}`);
       }
 
       const data = await response.json();
 
-      console.log(`[Frenet] Resposta: ${data.ShippingSevicesArray?.length || 0} opções`);
-
-      // Retornar dados brutos da Frenet para o frontend processar
       res.status(200).json({
         success: true,
         data: data,
       });
 
     } catch (error) {
-      console.error("[Frenet] Erro:", error.message);
+      console.error("[MelhorEnvio] Erro:", error.message);
       res.status(500).json({
         success: false,
         error: error.message || "Erro ao calcular frete.",
@@ -731,8 +806,8 @@ exports.onOrderUpdated = onDocumentUpdated(
         statusTitle = "Pagamento Confirmado!";
         messageBody = "Ótimas notícias! Seu pagamento foi processado com sucesso. Nossa equipe já está separando suas fragrâncias com o máximo cuidado.";
         
-        // AUTOMAÇÃO: Gerar etiqueta na Frenet
-        await createFrenetPostagem(order, orderId);
+        // AUTOMAÇÃO: Gerar etiqueta no Melhor Envio
+        await createShippingLabel(order, orderId);
         break;
       case 'shipped':
         subject = `Seu pedido está a caminho! 🚚 #${orderId.slice(0, 8)}`;

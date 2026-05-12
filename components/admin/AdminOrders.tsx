@@ -150,9 +150,9 @@ const AdminOrders: React.FC<AdminOrdersProps> = ({ orders, loading, handleStatus
                               <option value="cancelled">Cancelado</option>
                             </select>
                           </div>
-                          {order.frenetOrderId && (
+                          {order.shippingLabelId && (
                             <div className="flex items-center gap-1 text-[10px] text-green-600 font-bold uppercase">
-                              <Truck size={10} /> Etiqueta Frenet: {order.frenetOrderId}
+                              <Truck size={10} /> Etiqueta: {order.shippingLabelId}
                             </div>
                           )}
                         </div>
@@ -188,7 +188,7 @@ const AdminOrders: React.FC<AdminOrdersProps> = ({ orders, loading, handleStatus
                   </div>
                   <div className="flex flex-col items-end gap-1.5">
                     <StatusBadge status={order.status} />
-                    {order.frenetOrderId && (
+                    {order.shippingLabelId && (
                       <span className="text-[9px] text-green-600 font-bold bg-green-50 px-1.5 py-0.5 rounded border border-green-100 uppercase flex items-center gap-1">
                         <Truck size={10} /> Etiqueta OK
                       </span>

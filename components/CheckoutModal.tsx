@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { X, MapPin, CreditCard, CheckCircle, Loader2, Lock, FileText, Phone, Search, Truck, QrCode, Barcode, Copy, Tag } from 'lucide-react';
 import { CartItem, Address, SiteSettings, ShippingOption, Coupon } from '../types';
 import { createOrder } from '../services/orderService';
-import { calculateShipping } from '../services/frenetService';
+import { calculateShipping } from '../services/shippingService';
 import { processPayment, isValidCardNumber, PaymentMethod } from '../services/pagarmeService';
 import { sendOrderConfirmationEmail, sendAdminNewOrderEmail } from '../services/notificationService';
 import { validateCoupon, incrementCouponUsage } from '../services/couponService';
@@ -76,7 +76,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, cartItem
 
   const handleCalculateShipping = async (destZip: string) => {
     const originZip = siteSettings?.originZip || '01001-000';
-    const frenetToken = siteSettings?.frenetToken;
+    const melhorEnvioToken = siteSettings?.melhorEnvioToken;
     const threshold = siteSettings?.freeShippingThreshold || 0; // Default to 0 if not set
 
     setIsLoadingShipping(true);
@@ -84,13 +84,13 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, cartItem
     setSelectedShipping(null);
     setShippingCost(0);
     try {
-      const options = await calculateShipping(originZip, destZip, cartItems, subtotal, frenetToken, threshold);
+      const options = await calculateShipping(originZip, destZip, cartItems, subtotal, melhorEnvioToken, threshold);
       setShippingOptions(options);
       if (options.length > 0) {
         const cheapest = options.reduce((prev, curr) => prev.price < curr.price ? prev : curr);
         setSelectedShipping(cheapest);
         setShippingCost(cheapest.price);
-      } else if (frenetToken) {
+      } else if (melhorEnvioToken) {
          addToast('Não foi possível calcular o frete para este CEP.', 'error');
       }
     } catch (error) {
