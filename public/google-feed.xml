@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<rss xmlns:g="http://base.google.com/ns/1.0" version="2.0">
+  <channel>
+    <title>Vision Perfumes</title>
+    <link>https://visionperfumes.com.br</link>
+    <description>Perfumes Importados de Luxo</description>
+    <item>
+      <g:id>b35987179</g:id>
+      <g:title>Antonio Banderas Blue Seduction For Men Eau de Toilette</g:title>
+      <g:description>Perfume Blue Seduction For Men da marca Antonio Banderas. Fragrância exclusiva e sofisticada.</g:description>
+      <g:link>https://visionperfumes.com.br/?product=b35987179</g:link>
+      <g:image_link>https://firebasestorage.googleapis.com/v0/b/vision-perfumes.appspot.com/o/products%2F1714850774212_615m7W26GkL._AC_SL1000_.jpg?alt=media&amp;token=81284d72-9e9f-4f6c-8217-1a48c4897f2e</g:image_link>
+      <g:condition>new</g:condition>
+      <g:availability>in stock</g:availability>
+      <g:price>149.90 BRL</g:price>
+      <g:brand>Antonio Banderas</g:brand>
+      <g:google_product_category>Health &amp; Beauty &gt; Personal Care &gt; Cosmetics &gt; Perfume &amp; Cologne</g:google_product_category>
+    </item>
+    <item>
+      <g:id>b90161405</g:id>
+      <g:title>Carolina Herrera Good Girl Eau de Parfum</g:title>
+      <g:description>Perfume Good Girl da marca Carolina Herrera. Fragrância exclusiva e sofisticada.</g:description>
+      <g:link>https://visionperfumes.com.br/?product=b90161405</g:link>
+      <g:image_link>https://firebasestorage.googleapis.com/v0/b/vision-perfumes.appspot.com/o/products%2F1714850849317_goodgirl.jpg?alt=media&amp;token=9829375e-9905-4b08-872e-3db208535fbc</g:image_link>
+      <g:condition>new</g:condition>
+      <g:availability>in stock</g:availability>
+      <g:price>549.90 BRL</g:price>
+      <g:brand>Carolina Herrera</g:brand>
+      <g:google_product_category>Health &amp; Beauty &gt; Personal Care &gt; Cosmetics &gt; Perfume &amp; Cologne</g:google_product_category>
+    </item>
+    <item>
+      <g:id>b61405901</g:id>
+      <g:title>Dior Sauvage Eau de Parfum</g:title>
+      <g:description>Perfume Sauvage da marca Dior. Fragrância exclusiva e sofisticada.</g:description>
+      <g:link>https://visionperfumes.com.br/?product=b61405901</g:link>
+      <g:image_link>https://firebasestorage.googleapis.com/v0/b/vision-perfumes.appspot.com/o/products%2F1714850892114_sauvage.jpg?alt=media&amp;token=1498235e-9905-4b08-872e-3db208535fbc</g:image_link>
+      <g:condition>new</g:condition>
+      <g:availability>in stock</g:availability>
+      <g:price>689.90 BRL</g:price>
+      <g:brand>Dior</g:brand>
+      <g:google_product_category>Health &amp; Beauty &gt; Personal Care &gt; Cosmetics &gt; Perfume &amp; Cologne</g:google_product_category>
+    </item>
+  </channel>
+</rss>
