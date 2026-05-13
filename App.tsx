@@ -523,6 +523,7 @@ const AppContent: React.FC = () => {
                       </div>
                     </div>
                   </section>
+                )}
             </>
         )}
       </main>
