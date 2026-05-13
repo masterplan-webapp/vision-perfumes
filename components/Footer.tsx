@@ -3,9 +3,10 @@ import { Facebook, Instagram, Twitter, Mail } from 'lucide-react';
 
 interface FooterProps {
   onAboutClick?: () => void;
+  onLegalClick?: (type: any) => void;
 }
 
-const Footer: React.FC<FooterProps> = ({ onAboutClick }) => {
+const Footer: React.FC<FooterProps> = ({ onAboutClick, onLegalClick }) => {
   return (
     <footer className="bg-primary text-white pt-16 pb-8 mt-20 border-t border-white/10">
       <div className="container mx-auto px-4">
@@ -38,9 +39,25 @@ const Footer: React.FC<FooterProps> = ({ onAboutClick }) => {
               <li>
                 <button 
                   onClick={(e) => { e.preventDefault(); onAboutClick?.(); }}
-                  className="hover:text-accent-gold transition-colors"
+                  className="hover:text-accent-gold transition-colors text-left"
                 >
                   Sobre Nós
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={(e) => { e.preventDefault(); onLegalClick?.('privacy'); }}
+                  className="hover:text-accent-gold transition-colors text-left"
+                >
+                  Privacidade
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={(e) => { e.preventDefault(); onLegalClick?.('terms'); }}
+                  className="hover:text-accent-gold transition-colors text-left"
+                >
+                  Termos de Uso
                 </button>
               </li>
               {['Catálogo', 'Ofertas', 'Blog', 'Contato'].map(link => (
@@ -53,7 +70,23 @@ const Footer: React.FC<FooterProps> = ({ onAboutClick }) => {
           <div>
             <h4 className="font-serif text-lg font-bold text-accent-gold mb-6">Atendimento</h4>
             <ul className="space-y-3 text-sm text-gray-300">
-              {['Central de Ajuda', 'Política de Trocas', 'Frete e Entrega', 'Formas de Pagamento', 'Rastreamento'].map(link => (
+              <li>
+                <button 
+                  onClick={(e) => { e.preventDefault(); onLegalClick?.('returns'); }}
+                  className="hover:text-accent-gold transition-colors text-left"
+                >
+                  Trocas e Devoluções
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={(e) => { e.preventDefault(); onLegalClick?.('shipping'); }}
+                  className="hover:text-accent-gold transition-colors text-left"
+                >
+                  Frete e Entrega
+                </button>
+              </li>
+              {['Central de Ajuda', 'Formas de Pagamento', 'Rastreamento'].map(link => (
                 <li key={link}><a href="#" className="hover:text-accent-gold transition-colors">{link}</a></li>
               ))}
             </ul>

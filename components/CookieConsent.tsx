@@ -2,7 +2,11 @@
 import React, { useState, useEffect } from 'react';
 import { ShieldCheck, X } from 'lucide-react';
 
-const CookieConsent: React.FC = () => {
+interface CookieConsentProps {
+  onPrivacyClick: () => void;
+}
+
+const CookieConsent: React.FC<CookieConsentProps> = ({ onPrivacyClick }) => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -34,7 +38,7 @@ const CookieConsent: React.FC = () => {
             <div className="space-y-1">
               <h4 className="text-white font-bold text-sm sm:text-base">Sua privacidade é nossa prioridade</h4>
               <p className="text-gray-400 text-xs sm:text-sm leading-relaxed max-w-2xl">
-                Utilizamos cookies e tecnologias semelhantes para melhorar sua experiência, personalizar publicidade e analisar o tráfego do site. Ao clicar em "Aceitar", você concorda com o uso de todas as ferramentas. Confira nossa <a href="#" className="text-accent-gold hover:underline">Política de Privacidade</a>.
+                Utilizamos cookies e tecnologias semelhantes para melhorar sua experiência, personalizar publicidade e analisar o tráfego do site. Ao clicar em "Aceitar", você concorda com o uso de todas as ferramentas. Confira nossa <button onClick={(e) => { e.preventDefault(); onPrivacyClick(); }} className="text-accent-gold hover:underline">Política de Privacidade</button>.
               </p>
             </div>
           </div>

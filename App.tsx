@@ -15,6 +15,7 @@ import UserOrdersModal from './components/UserOrdersModal';
 import ProfileModal from './components/ProfileModal';
 import AboutModal from './components/AboutModal';
 import CookieConsent from './components/CookieConsent';
+import LegalModal, { LegalType } from './components/LegalModal';
 import { BRANDS } from './constants';
 import { Product, CartItem, FilterState, SiteSettings, ProductVariation } from './types';
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -41,6 +42,7 @@ const AppContent: React.FC = () => {
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [isAdminView, setIsAdminView] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [activeLegalType, setActiveLegalType] = useState<LegalType | null>(null);
   const [isLoadingProducts, setIsLoadingProducts] = useState(true);
   
   const { user, loading: authLoading } = useAuth();
@@ -521,12 +523,14 @@ const AppContent: React.FC = () => {
                       </div>
                     </div>
                   </section>
-                )}
             </>
         )}
       </main>
 
-      <Footer onAboutClick={() => setIsAboutOpen(true)} />
+      <Footer 
+        onAboutClick={() => setIsAboutOpen(true)} 
+        onLegalClick={(type) => setActiveLegalType(type)}
+      />
 
       <CartSidebar 
         isOpen={isCartOpen} 
@@ -588,7 +592,13 @@ const AppContent: React.FC = () => {
         isOpen={isOrdersOpen}
         onClose={() => setIsOrdersOpen(false)}
       />
-      <CookieConsent />
+
+      <LegalModal 
+        type={activeLegalType} 
+        onClose={() => setActiveLegalType(null)} 
+      />
+
+      <CookieConsent onPrivacyClick={() => setActiveLegalType('privacy')} />
     </div>
   );
 };
