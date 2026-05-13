@@ -10,27 +10,49 @@ interface ContactModalProps {
 const CONTACT_EMAIL = "fabiozacari@gmail.com";
 const WHATSAPP_NUMBER = "5511910193710";
 const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=Olá,%20gostaria%20de%20mais%20informações%20sobre%20os%20perfumes.`;
+const FORMSPREE_URL = "https://formspree.io/f/mvzlyjka";
 
 const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    subject: '',
     message: ''
   });
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate form submission
-    // To receive emails, integrate with a service like Formspree or EmailJS
-    setIsSubmitted(true);
-    setTimeout(() => {
-      setIsSubmitted(false);
-      onClose();
-    }, 3000);
+    setIsLoading(true);
+
+    try {
+      const response = await fetch(FORMSPREE_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (response.ok) {
+        setIsSubmitted(true);
+        setFormData({ name: '', email: '', message: '' });
+        setTimeout(() => {
+          setIsSubmitted(false);
+          onClose();
+        }, 3000);
+      } else {
+        alert("Houve um erro ao enviar sua mensagem. Por favor, tente novamente.");
+      }
+    } catch (error) {
+      console.error("Form error:", error);
+      alert("Houve um erro ao enviar sua mensagem. Verifique sua conexão.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -88,14 +110,12 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
                     </div>
                   </a>
 
-                  <div className="flex items-center gap-4 p-4 bg-white/5 border border-white/10 rounded-2xl">
-                    <div className="w-12 h-12 bg-accent-gold rounded-full flex items-center justify-center text-primary-dark">
-                      <Mail size={20} />
-                    </div>
-                    <div>
-                      <span className="block text-xs text-accent-gold font-bold uppercase tracking-widest">E-mail</span>
-                      <span className="text-white font-medium">{CONTACT_EMAIL}</span>
-                    </div>
+                  <div className="p-4 bg-white/5 border border-white/10 rounded-2xl">
+                    <p className="text-gray-400 text-[10px] uppercase tracking-widest font-bold mb-1 opacity-60">Atendimento</p>
+                    <p className="text-white text-xs leading-relaxed">
+                      Segunda a Sexta: 09h às 18h<br/>
+                      Sábado: 09h às 13h
+                    </p>
                   </div>
                 </div>
               </div>
@@ -137,10 +157,17 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
                 </div>
                 <button 
                   type="submit"
-                  className="w-full bg-accent-gold text-primary-dark font-bold py-4 rounded-xl hover:bg-white transition-all flex items-center justify-center gap-2 shadow-xl shadow-accent-gold/20"
+                  disabled={isLoading}
+                  className="w-full bg-accent-gold text-primary-dark font-bold py-4 rounded-xl hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 shadow-xl shadow-accent-gold/20"
                 >
-                  <Send size={18} />
-                  Enviar Mensagem
+                  {isLoading ? (
+                    <div className="w-5 h-5 border-2 border-primary-dark border-t-transparent rounded-full animate-spin"></div>
+                  ) : (
+                    <>
+                      <Send size={18} />
+                      Enviar Mensagem
+                    </>
+                  )}
                 </button>
               </form>
             </div>
