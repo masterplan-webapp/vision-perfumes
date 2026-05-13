@@ -14,6 +14,7 @@ import CheckoutModal from './components/CheckoutModal';
 import UserOrdersModal from './components/UserOrdersModal';
 import ProfileModal from './components/ProfileModal';
 import AboutModal from './components/AboutModal';
+import CookieConsent from './components/CookieConsent';
 import { BRANDS } from './constants';
 import { Product, CartItem, FilterState, SiteSettings, ProductVariation } from './types';
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -587,6 +588,7 @@ const AppContent: React.FC = () => {
         isOpen={isOrdersOpen}
         onClose={() => setIsOrdersOpen(false)}
       />
+      <CookieConsent />
     </div>
   );
 };
