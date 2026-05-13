@@ -14,6 +14,7 @@ import CheckoutModal from './components/CheckoutModal';
 import UserOrdersModal from './components/UserOrdersModal';
 import ProfileModal from './components/ProfileModal';
 import AboutModal from './components/AboutModal';
+import ContactModal from './components/ContactModal';
 import CookieConsent from './components/CookieConsent';
 import LegalModal, { LegalType } from './components/LegalModal';
 import { BRANDS } from './constants';
@@ -40,6 +41,7 @@ const AppContent: React.FC = () => {
   const [isOrdersOpen, setIsOrdersOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
+  const [isContactOpen, setIsContactOpen] = useState(false);
   const [isAdminView, setIsAdminView] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [activeLegalType, setActiveLegalType] = useState<LegalType | null>(null);
@@ -278,6 +280,7 @@ const AppContent: React.FC = () => {
         onWishlistClick={() => setIsWishlistOpen(true)}
         onProfileClick={() => setIsProfileOpen(true)}
         onAboutClick={() => setIsAboutOpen(true)}
+        onContactClick={() => setIsContactOpen(true)}
         isAdminView={isAdminView}
         topBarText={siteSettings?.topBarText}
       />
@@ -530,6 +533,7 @@ const AppContent: React.FC = () => {
 
       <Footer 
         onAboutClick={() => setIsAboutOpen(true)} 
+        onContactClick={() => setIsContactOpen(true)}
         onLegalClick={(type) => setActiveLegalType(type)}
       />
 
@@ -578,6 +582,11 @@ const AppContent: React.FC = () => {
       <AboutModal 
         isOpen={isAboutOpen}
         onClose={() => setIsAboutOpen(false)}
+      />
+
+      <ContactModal 
+        isOpen={isContactOpen}
+        onClose={() => setIsContactOpen(false)}
       />
 
       <CheckoutModal 

@@ -3,10 +3,11 @@ import { Facebook, Instagram, Twitter, Mail } from 'lucide-react';
 
 interface FooterProps {
   onAboutClick?: () => void;
+  onContactClick?: () => void;
   onLegalClick?: (type: any) => void;
 }
 
-const Footer: React.FC<FooterProps> = ({ onAboutClick, onLegalClick }) => {
+const Footer: React.FC<FooterProps> = ({ onAboutClick, onContactClick, onLegalClick }) => {
   return (
     <footer className="bg-primary text-white pt-16 pb-8 mt-20 border-t border-white/10">
       <div className="container mx-auto px-4">
@@ -60,9 +61,17 @@ const Footer: React.FC<FooterProps> = ({ onAboutClick, onLegalClick }) => {
                   Termos de Uso
                 </button>
               </li>
-              {['Catálogo', 'Ofertas', 'Contato'].map(link => (
+              {['Catálogo', 'Ofertas'].map(link => (
                 <li key={link}><a href="#" className="hover:text-accent-gold transition-colors">{link}</a></li>
               ))}
+              <li>
+                <button 
+                  onClick={(e) => { e.preventDefault(); onContactClick?.(); }}
+                  className="hover:text-accent-gold transition-colors text-left"
+                >
+                  Contato
+                </button>
+              </li>
             </ul>
           </div>
 

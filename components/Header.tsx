@@ -17,6 +17,7 @@ interface HeaderProps {
   onWishlistClick: () => void;
   onProfileClick: () => void;
   onAboutClick: () => void;
+  onContactClick: () => void;
   isAdminView: boolean;
   topBarText?: string;
 }
@@ -33,6 +34,7 @@ const Header: React.FC<HeaderProps> = ({
     onWishlistClick,
     onProfileClick,
     onAboutClick,
+    onContactClick,
     isAdminView,
     topBarText
 }) => {
