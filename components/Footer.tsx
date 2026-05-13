@@ -14,12 +14,20 @@ const Footer: React.FC<FooterProps> = ({ onAboutClick, onContactClick, onLegalCl
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
           {/* Brand */}
           <div className="space-y-6">
-            <div className="flex items-center">
+            <div className="flex items-center gap-3">
               <img 
-                src="/assets/logo-horizontal.png" 
-                alt="Vision Perfumes" 
-                className="h-20 w-auto object-contain brightness-110"
+                src="/favicon.png" 
+                alt="Vision Perfumes Icon" 
+                className="h-12 w-auto object-contain brightness-110"
               />
+              <div className="flex flex-col">
+                <span className="font-serif text-2xl font-medium text-accent-gold tracking-[0.2em] uppercase leading-none">
+                  Vision
+                </span>
+                <span className="font-serif text-[8px] font-light text-white/60 tracking-[0.5em] uppercase mt-1">
+                  Perfumes Importados
+                </span>
+              </div>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed">
               Sua loja de perfumes importados premium. Fragrâncias exclusivas das melhores marcas do mundo, selecionadas para você.
