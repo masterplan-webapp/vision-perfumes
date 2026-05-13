@@ -69,13 +69,17 @@ const AppContent: React.FC = () => {
         fetchProducts(),
         getSiteSettings()
     ]);
-    setProducts(prodData);
+    
+    // Filter out 5ml products globally as requested
+    const filteredProdData = prodData.filter(p => !p.name.toLowerCase().includes('5ml'));
+    
+    setProducts(filteredProdData);
     setSiteSettings(settingsData);
     setIsLoadingProducts(false);
     
     // Track View Item List
-    if (prodData.length > 0) {
-      trackViewItemList(prodData);
+    if (filteredProdData.length > 0) {
+      trackViewItemList(filteredProdData);
     }
   };
 

@@ -105,10 +105,11 @@ const Header: React.FC<HeaderProps> = ({
             {!isAdminView && (
                 <button 
                     onClick={onAiClick}
-                    className="hidden md:flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-full text-xs font-bold hover:opacity-90 transition-opacity shadow-md"
+                    className="flex items-center justify-center gap-2 p-2 md:px-4 md:py-2 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-full text-xs font-bold hover:opacity-90 transition-opacity shadow-lg"
+                    title="Consultor Virtual"
                 >
-                    <Sparkles size={14} />
-                    Consultor Virtual
+                    <Sparkles size={18} className="md:w-3.5 md:h-3.5" />
+                    <span className="hidden md:inline">Consultor Virtual</span>
                 </button>
             )}
 
