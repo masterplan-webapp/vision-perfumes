@@ -18,7 +18,7 @@ const Footer: React.FC<FooterProps> = ({ onAboutClick, onContactClick, onLegalCl
               <img 
                 src="/assets/logo-horizontal.png" 
                 alt="Vision Perfumes" 
-                className="h-12 w-auto object-contain brightness-110"
+                className="h-20 w-auto object-contain brightness-110"
               />
             </div>
             <p className="text-gray-400 text-sm leading-relaxed">
