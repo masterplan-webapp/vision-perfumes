@@ -15,11 +15,16 @@ const AdminClients: React.FC = () => {
   const [clientOrders, setClientOrders] = useState<Order[]>([]);
   const [loadingOrders, setLoadingOrders] = useState(false);
 
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
   const load = async () => {
     setLoading(true);
+    setErrorMsg(null);
     try {
-      setClients(await getAllUsers());
-    } catch {
+      const data = await getAllUsers();
+      setClients(data);
+    } catch (err: any) {
+      setErrorMsg(err?.message || 'Erro ao carregar clientes.');
       addToast('Erro ao carregar clientes.', 'error');
     } finally {
       setLoading(false);
@@ -73,15 +78,23 @@ const AdminClients: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row gap-4 justify-between">
-        <div className="relative w-full md:w-96">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-          <input
-            type="text"
-            placeholder="Buscar por nome ou email..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:border-accent-gold outline-none"
-          />
+        <div className="relative w-full md:w-96 flex gap-2">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+            <input
+              type="text"
+              placeholder="Buscar por nome ou email..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:border-accent-gold outline-none"
+            />
+          </div>
+          <button
+            onClick={load}
+            className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors whitespace-nowrap font-medium"
+          >
+            Atualizar
+          </button>
         </div>
         <button
           onClick={() => exportClientsCSV(filtered)}
@@ -91,13 +104,21 @@ const AdminClients: React.FC = () => {
         </button>
       </div>
 
+      {errorMsg && (
+        <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg">
+          <p className="font-bold">Erro ao carregar os clientes:</p>
+          <p className="text-sm">{errorMsg}</p>
+          <p className="text-xs mt-2 opacity-80">Verifique as regras do Firebase Firestore (firestore.rules) para garantir que a coleção 'users' tem permissão de leitura.</p>
+        </div>
+      )}
+
       {loading ? (
         <div className="bg-white rounded-xl border border-gray-200 p-12 flex justify-center">
           <Loader2 className="animate-spin text-accent-gold" size={32} />
         </div>
       ) : filtered.length === 0 ? (
         <div className="bg-white rounded-xl border border-gray-200 p-12 text-center text-gray-400">
-          {clients.length === 0 ? 'Nenhum cliente cadastrado.' : 'Nenhum resultado para a busca.'}
+          {clients.length === 0 ? 'Nenhum cliente cadastrado. (Pode ser bloqueio de permissão no Firebase)' : 'Nenhum resultado para a busca.'}
         </div>
       ) : (
         <>
