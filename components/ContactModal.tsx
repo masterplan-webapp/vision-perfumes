@@ -7,6 +7,10 @@ interface ContactModalProps {
   onClose: () => void;
 }
 
+const CONTACT_EMAIL = "fabiozacari@gmail.com";
+const WHATSAPP_NUMBER = "5511910193710";
+const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=Olá,%20gostaria%20de%20mais%20informações%20sobre%20os%20perfumes.`;
+
 const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [formData, setFormData] = useState({
@@ -21,15 +25,13 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Simulate form submission
+    // To receive emails, integrate with a service like Formspree or EmailJS
     setIsSubmitted(true);
     setTimeout(() => {
       setIsSubmitted(false);
       onClose();
     }, 3000);
   };
-
-  const whatsappNumber = "5511999999999"; // Replace with real number if provided
-  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=Olá,%20gostaria%20de%20mais%20informações%20sobre%20os%20perfumes.`;
 
   return (
     <div className="fixed inset-0 bg-black/90 backdrop-blur-md z-[120] flex items-center justify-center p-4 overflow-y-auto">
@@ -72,7 +74,7 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
 
                 <div className="space-y-4">
                   <a 
-                    href={whatsappUrl} 
+                    href={WHATSAPP_URL} 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="flex items-center gap-4 p-4 bg-green-500/10 border border-green-500/20 rounded-2xl hover:bg-green-500/20 transition-all group"
@@ -82,7 +84,7 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
                     </div>
                     <div>
                       <span className="block text-xs text-green-500 font-bold uppercase tracking-widest">WhatsApp</span>
-                      <span className="text-white font-medium">(11) 99999-9999</span>
+                      <span className="text-white font-medium">(11) 91019-3710</span>
                     </div>
                   </a>
 
@@ -92,7 +94,7 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
                     </div>
                     <div>
                       <span className="block text-xs text-accent-gold font-bold uppercase tracking-widest">E-mail</span>
-                      <span className="text-white font-medium">contato@visionperfumes.com</span>
+                      <span className="text-white font-medium">{CONTACT_EMAIL}</span>
                     </div>
                   </div>
                 </div>
