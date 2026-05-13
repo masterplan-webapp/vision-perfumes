@@ -1,5 +1,7 @@
-import React from 'react';
-import { Facebook, Instagram, Twitter, Mail } from 'lucide-react';
+import React, { useState } from 'react';
+import { Facebook, Instagram, Twitter, Mail, CheckCircle2, Loader2 } from 'lucide-react';
+import { subscribeToNewsletter } from '../services/newsletterService';
+import { useToast } from '../context/ToastContext';
 
 interface FooterProps {
   onAboutClick?: () => void;
@@ -8,6 +10,28 @@ interface FooterProps {
 }
 
 const Footer: React.FC<FooterProps> = ({ onAboutClick, onContactClick, onLegalClick }) => {
+  const { addToast } = useToast();
+  const [email, setEmail] = useState('');
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+    
+    setIsLoading(true);
+    try {
+      const result = await subscribeToNewsletter(email);
+      addToast(result.message, 'success');
+      setIsSubscribed(true);
+      setEmail('');
+    } catch (error) {
+      addToast('Erro ao assinar newsletter.', 'error');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <footer className="bg-primary text-white pt-16 pb-8 mt-20 border-t border-white/10">
       <div className="container mx-auto px-4">
@@ -111,16 +135,31 @@ const Footer: React.FC<FooterProps> = ({ onAboutClick, onContactClick, onLegalCl
           <div>
             <h4 className="font-serif text-lg font-bold text-accent-gold mb-6">Newsletter</h4>
             <p className="text-gray-400 text-sm mb-4">Receba ofertas exclusivas e novidades em primeira mão.</p>
-            <form className="flex gap-2">
-              <input 
-                type="email" 
-                placeholder="Seu e-mail" 
-                className="bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-sm w-full focus:outline-none focus:border-accent-gold transition-colors"
-              />
-              <button type="button" className="bg-accent-gold text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-[#c49b2d] transition-colors">
-                Assinar
-              </button>
-            </form>
+            
+            {isSubscribed ? (
+              <div className="flex items-center gap-2 text-green-500 bg-green-500/10 p-3 rounded-lg border border-green-500/20 animate-fade-in">
+                <CheckCircle2 size={18} />
+                <span className="text-xs font-bold uppercase tracking-widest">Inscrito com sucesso!</span>
+              </div>
+            ) : (
+              <form onSubmit={handleNewsletterSubmit} className="flex gap-2">
+                <input 
+                  type="email" 
+                  required
+                  placeholder="Seu e-mail" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-sm w-full focus:outline-none focus:border-accent-gold transition-colors"
+                />
+                <button 
+                  type="submit" 
+                  disabled={isLoading}
+                  className="bg-accent-gold text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-[#c49b2d] disabled:opacity-50 disabled:cursor-not-allowed transition-colors min-w-[100px] flex items-center justify-center"
+                >
+                  {isLoading ? <Loader2 className="animate-spin" size={18} /> : "Assinar"}
+                </button>
+              </form>
+            )}
           </div>
         </div>
 
