@@ -236,7 +236,7 @@ const AdminOrders: React.FC<AdminOrdersProps> = ({ orders, loading, handleStatus
           <div className="bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-3xl max-h-[92vh] overflow-y-auto shadow-2xl relative">
             <div className="sticky top-0 bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between z-10">
               <h2 className="font-serif text-xl font-bold text-primary">Detalhes do Pedido</h2>
-              <button onClick={() => setSelectedOrder(null)} className="p-2 hover:bg-gray-100 rounded-full">
+              <button onClick={() => setSelectedOrder(null)} className="p-2 hover:bg-gray-100 rounded-full text-gray-500 hover:text-gray-700 transition-colors">
                 <X size={22} />
               </button>
             </div>

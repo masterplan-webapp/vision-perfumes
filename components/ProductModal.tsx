@@ -49,7 +49,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onAddToCa
       <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative flex flex-col md:flex-row" onClick={e => e.stopPropagation()}>
         <button 
           onClick={onClose}
-          className="absolute top-4 right-4 z-10 w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-100 transition-colors text-gray-700"
+          className="absolute top-4 right-4 z-10 w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-100 text-gray-500 hover:text-gray-700 transition-colors"
           aria-label="Fechar"
         >
           <X size={24} />

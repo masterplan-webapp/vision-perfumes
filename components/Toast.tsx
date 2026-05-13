@@ -42,7 +42,7 @@ const Toast: React.FC<ToastProps> = ({ id, message, type, onClose }) => {
       </div>
       <button 
         onClick={() => onClose(id)} 
-        className="text-gray-400 hover:text-gray-600 transition-colors"
+        className="text-gray-500 hover:text-gray-700 transition-colors"
       >
         <X size={16} />
       </button>
