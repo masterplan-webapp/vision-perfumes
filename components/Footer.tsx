@@ -60,7 +60,7 @@ const Footer: React.FC<FooterProps> = ({ onAboutClick, onLegalClick }) => {
                   Termos de Uso
                 </button>
               </li>
-              {['Catálogo', 'Ofertas', 'Blog', 'Contato'].map(link => (
+              {['Catálogo', 'Ofertas', 'Contato'].map(link => (
                 <li key={link}><a href="#" className="hover:text-accent-gold transition-colors">{link}</a></li>
               ))}
             </ul>
@@ -86,9 +86,7 @@ const Footer: React.FC<FooterProps> = ({ onAboutClick, onLegalClick }) => {
                   Frete e Entrega
                 </button>
               </li>
-              {['Central de Ajuda', 'Formas de Pagamento', 'Rastreamento'].map(link => (
-                <li key={link}><a href="#" className="hover:text-accent-gold transition-colors">{link}</a></li>
-              ))}
+
             </ul>
           </div>
 
