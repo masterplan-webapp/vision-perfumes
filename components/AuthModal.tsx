@@ -46,8 +46,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         await updateUserProfile(userCredential.user.uid, {
           email: email,
           name: name || '',
+          displayName: name || '',
           createdAt: new Date().toISOString()
         });
+        await userCredential.user.reload(); // Reload to pick up the new displayName
         addToast('Conta criada com sucesso! Bem-vindo.', 'success');
         onClose();
       }

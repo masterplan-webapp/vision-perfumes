@@ -179,12 +179,23 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, cartItem
 
     setLoading(true);
     try {
+      // Fetch profile name if not present in auth user
+      let finalCustomerName = user.displayName;
+      if (!finalCustomerName || finalCustomerName === 'Cliente') {
+          const profile = await import('../services/userService').then(m => m.getUserProfile(user.uid));
+          if (profile) {
+              finalCustomerName = profile.displayName || profile.name || 'Cliente';
+          } else {
+              finalCustomerName = 'Cliente';
+          }
+      }
+
       // 0. Process Payment
       const paymentResult = await processPayment(
           finalTotal,
           paymentMethod,
           {
-              name: user.displayName || 'Cliente',
+              name: finalCustomerName,
               email: user.email || '',
               document: document,
               phone: phone,
@@ -210,7 +221,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose, cartItem
       // 1. Create Order in Database
       const orderId = await createOrder(
         user.uid,
-        user.displayName || 'Cliente',
+        finalCustomerName,
         user.email || '',
         cartItems,
         finalTotal,
