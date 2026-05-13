@@ -139,11 +139,11 @@ const AdminClients: React.FC = () => {
                     <td className="p-4">
                       <div className="flex items-center gap-3">
                         <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm shrink-0">
-                          {(client.displayName || client.name || client.email)[0].toUpperCase()}
+                          {((client.displayName || client.name || client.email || '?')[0] || '?').toUpperCase()}
                         </div>
                         <div>
                           <p className="font-bold text-gray-800">{client.displayName || client.name || '—'}</p>
-                          <p className="text-xs text-gray-400">{client.email}</p>
+                          <p className="text-xs text-gray-400">{client.email || 'Sem email'}</p>
                         </div>
                       </div>
                     </td>
@@ -176,11 +176,11 @@ const AdminClients: React.FC = () => {
                 onClick={() => openClient(client)}
               >
                 <div className="w-11 h-11 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-lg shrink-0">
-                  {(client.displayName || client.name || client.email)[0].toUpperCase()}
+                  {((client.displayName || client.name || client.email || '?')[0] || '?').toUpperCase()}
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-bold text-gray-800 truncate">{client.displayName || client.name || '—'}</p>
-                  <p className="text-xs text-gray-400 truncate">{client.email}</p>
+                  <p className="text-xs text-gray-400 truncate">{client.email || 'Sem email'}</p>
                   {client.defaultAddress && (
                     <p className="text-xs text-gray-500 mt-0.5">
                       {client.defaultAddress.city} / {client.defaultAddress.state}
@@ -201,7 +201,7 @@ const AdminClients: React.FC = () => {
             <div className="sticky top-0 bg-white border-b border-gray-100 p-5 flex justify-between items-center z-10">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xl">
-                  {(selectedClient.displayName || selectedClient.name || selectedClient.email)[0].toUpperCase()}
+                  {((selectedClient.displayName || selectedClient.name || selectedClient.email || '?')[0] || '?').toUpperCase()}
                 </div>
                 <div>
                   <h2 className="font-serif text-xl font-bold text-primary">
