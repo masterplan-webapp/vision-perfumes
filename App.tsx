@@ -23,7 +23,7 @@ import { getSiteSettings } from './services/settingsService';
 import { getCartFromFirebase, saveCartToFirebase } from './services/cartService';
 import { ToastProvider } from './context/ToastContext';
 import { trackViewItemList, trackAddToCart, trackBeginCheckout } from './services/analyticsService';
-import { Loader2, Shield, Flower2, Sparkles, Gift, HelpCircle, ChevronDown, Package } from 'lucide-react';
+import { Loader2, Shield, Flower2, Sparkles, Gift, HelpCircle, ChevronDown, Package, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const AppContent: React.FC = () => {
   // State
@@ -52,6 +52,10 @@ const AppContent: React.FC = () => {
     sort: '',
     search: ''
   });
+
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 12;
 
   // Load Data
   const loadData = async () => {
@@ -237,6 +241,17 @@ const AppContent: React.FC = () => {
     return result;
   }, [filters, products]);
 
+  const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
+  const paginatedProducts = useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredProducts.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  }, [filteredProducts, currentPage]);
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filters]);
+
   const scrollToProducts = () => {
     const el = document.getElementById('products');
     if (el) el.scrollIntoView({ behavior: 'smooth' });
@@ -390,23 +405,79 @@ const AppContent: React.FC = () => {
                         </button>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                    {filteredProducts.map(product => (
-                        <ProductCard 
-                        key={product.id} 
-                        product={product} 
-                        // For Quick Add, we open modal if there are variations
-                        onAddToCart={(p) => {
-                            if (p.variations && p.variations.length > 0) {
-                                setSelectedProduct(p);
-                            } else {
-                                handleAddToCart(p);
-                            }
-                        }}
-                        onClick={(p) => setSelectedProduct(p)}
-                        />
-                    ))}
-                    </div>
+                    <>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                        {paginatedProducts.map(product => (
+                            <ProductCard 
+                            key={product.id} 
+                            product={product} 
+                            // For Quick Add, we open modal if there are variations
+                            onAddToCart={(p) => {
+                                if (p.variations && p.variations.length > 0) {
+                                    setSelectedProduct(p);
+                                } else {
+                                    handleAddToCart(p);
+                                }
+                            }}
+                            onClick={(p) => setSelectedProduct(p)}
+                            />
+                        ))}
+                        </div>
+
+                        {/* Pagination UI */}
+                        {totalPages > 1 && (
+                            <div className="mt-16 flex flex-col items-center gap-6">
+                                <div className="flex items-center gap-2">
+                                    <button
+                                        onClick={() => { setCurrentPage(prev => Math.max(1, prev - 1)); scrollToProducts(); }}
+                                        disabled={currentPage === 1}
+                                        className="p-2 rounded-lg border border-white/10 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/5 transition-colors"
+                                        aria-label="Página Anterior"
+                                    >
+                                        <ChevronLeft size={20} />
+                                    </button>
+                                    
+                                    <div className="flex items-center gap-1">
+                                        {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => {
+                                            // Show limited pages if many (simplified pagination for now)
+                                            if (totalPages > 7) {
+                                                if (page !== 1 && page !== totalPages && Math.abs(page - currentPage) > 1) {
+                                                    if (page === 2 || page === totalPages - 1) return <span key={page} className="text-white/30 px-1">...</span>;
+                                                    return null;
+                                                }
+                                            }
+                                            
+                                            return (
+                                                <button
+                                                    key={page}
+                                                    onClick={() => { setCurrentPage(page); scrollToProducts(); }}
+                                                    className={`w-10 h-10 rounded-lg flex items-center justify-center text-sm font-bold transition-all ${
+                                                        currentPage === page 
+                                                        ? 'bg-accent-gold text-primary shadow-lg shadow-accent-gold/20' 
+                                                        : 'text-white/60 hover:text-white hover:bg-white/5'
+                                                    }`}
+                                                >
+                                                    {page}
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+
+                                    <button
+                                        onClick={() => { setCurrentPage(prev => Math.min(totalPages, prev + 1)); scrollToProducts(); }}
+                                        disabled={currentPage === totalPages}
+                                        className="p-2 rounded-lg border border-white/10 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/5 transition-colors"
+                                        aria-label="Próxima Página"
+                                    >
+                                        <ChevronRight size={20} />
+                                    </button>
+                                </div>
+                                <p className="text-white/40 text-xs font-medium uppercase tracking-widest">
+                                    Página {currentPage} de {totalPages}
+                                </p>
+                            </div>
+                        )}
+                    </>
                 )}
                 </section>
                 
