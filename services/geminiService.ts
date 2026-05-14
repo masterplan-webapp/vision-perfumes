@@ -1,4 +1,4 @@
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { Product } from '../types';
 
 const getApiKey = () => {
@@ -12,7 +12,7 @@ const getApiKey = () => {
 };
 
 const apiKey = getApiKey();
-const ai = new GoogleGenAI({ apiKey });
+const ai = new GoogleGenerativeAI(apiKey);
 
 export interface RecommendedProduct {
   productId: string;
@@ -58,15 +58,10 @@ PERGUNTA DO CLIENTE: "${query}"
 Responda de forma natural e elegante, incluindo o [ID:xxx] de cada produto sugerido no texto.`;
 
   try {
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: [{ role: 'user', parts: [{ text: prompt }] }],
-      config: {
-        thinkingConfig: { thinkingBudget: 0 }
-      }
-    });
-
-    const text = response.text || "Desculpe, não consegui encontrar uma recomendação no momento.";
+    const model = ai.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
 
     // Extract product IDs from the response using [ID:xxx] pattern
     const idMatches = text.matchAll(/\[ID:([^\]]+)\]/g);
