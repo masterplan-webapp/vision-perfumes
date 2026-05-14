@@ -105,7 +105,7 @@ const Header: React.FC<HeaderProps> = ({
             {!isAdminView && (
                 <button 
                     onClick={onAiClick}
-                    className="hidden items-center justify-center gap-2 p-2 md:px-4 md:py-2 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-full text-xs font-bold hover:opacity-90 transition-opacity shadow-lg"
+                    className="flex items-center justify-center gap-2 p-2 md:px-4 md:py-2 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-full text-xs font-bold hover:opacity-90 transition-opacity shadow-lg"
                     title="Consultor Virtual"
                 >
                     <Sparkles size={18} className="md:w-3.5 md:h-3.5" />
@@ -244,7 +244,7 @@ const Header: React.FC<HeaderProps> = ({
                         </button>
                         </>
                     )}
-                    <button onClick={() => { onAiClick(); setIsMenuOpen(false); }} className="hidden items-center gap-2 text-indigo-400 font-bold text-left">
+                    <button onClick={() => { onAiClick(); setIsMenuOpen(false); }} className="flex items-center gap-2 text-indigo-400 font-bold text-left">
                         <Sparkles size={16} /> Consultor Virtual
                     </button>
                 </li>
