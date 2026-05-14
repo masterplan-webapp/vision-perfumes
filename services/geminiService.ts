@@ -58,11 +58,31 @@ PERGUNTA DO CLIENTE: "${query}"
 Responda de forma natural e elegante, incluindo o [ID:xxx] de cada produto sugerido no texto.`;
 
   try {
-    const model = ai.getGenerativeModel({ model: "gemini-1.5-flash" }, { apiVersion: "v1" });
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
+  const modelsToTry = ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-pro"];
+  let text = "";
+  let success = false;
 
+  for (const modelName of modelsToTry) {
+    try {
+      const model = ai.getGenerativeModel({ model: modelName });
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      text = response.text();
+      if (text) {
+        success = true;
+        break;
+      }
+    } catch (err) {
+      console.warn(`Modelo ${modelName} falhou, tentando o próximo...`);
+      continue;
+    }
+  }
+
+  if (!success) {
+    throw new Error("Nenhum modelo do Gemini respondeu.");
+  }
+
+  try {
     // Extract product IDs from the response using [ID:xxx] pattern
     const idMatches = text.matchAll(/\[ID:([^\]]+)\]/g);
     const recommendations: RecommendedProduct[] = [];
