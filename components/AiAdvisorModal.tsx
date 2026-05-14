@@ -81,7 +81,13 @@ const AiAdvisorModal: React.FC<AiAdvisorModalProps> = ({ isOpen, onClose, produc
                <div className="space-y-4">
                  {/* AI Text Response */}
                  <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 text-gray-700">
-                     <div className="whitespace-pre-line text-sm leading-relaxed">{result.message}</div>
+                     <div className="whitespace-pre-line text-sm leading-relaxed">
+                        {result.message.split(/(\*\*.*?\*\*)/g).map((part, i) => 
+                          part.startsWith('**') && part.endsWith('**') 
+                            ? <strong key={i} className="font-bold text-gray-900">{part.slice(2, -2)}</strong>
+                            : part
+                        )}
+                     </div>
                  </div>
 
                  {/* Product Cards */}
