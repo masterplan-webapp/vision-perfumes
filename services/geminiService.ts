@@ -57,7 +57,6 @@ PERGUNTA DO CLIENTE: "${query}"
 
 Responda de forma natural e elegante, incluindo o [ID:xxx] de cada produto sugerido no texto.`;
 
-  try {
   const modelsToTry = ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-pro"];
   let text = "";
   let success = false;
@@ -79,7 +78,10 @@ Responda de forma natural e elegante, incluindo o [ID:xxx] de cada produto suger
   }
 
   if (!success) {
-    throw new Error("Nenhum modelo do Gemini respondeu.");
+    return {
+      message: "Houve um erro ao conectar com nosso consultor virtual. Tente novamente mais tarde.",
+      recommendations: []
+    };
   }
 
   try {
@@ -101,9 +103,9 @@ Responda de forma natural e elegante, incluindo o [ID:xxx] de cada produto suger
 
     return { message: cleanMessage, recommendations };
   } catch (error) {
-    console.error("Erro ao consultar Gemini:", error);
+    console.error("Erro ao processar resposta do Gemini:", error);
     return {
-      message: "Houve um erro ao conectar com nosso consultor virtual. Tente novamente mais tarde.",
+      message: "Houve um erro ao processar a recomendação. Tente novamente mais tarde.",
       recommendations: []
     };
   }
