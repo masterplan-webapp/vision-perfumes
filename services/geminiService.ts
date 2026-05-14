@@ -11,7 +11,7 @@ const getApiKey = () => {
   return "";
 };
 
-const apiKey = getApiKey();
+const apiKey = (getApiKey() || "") as string;
 const ai = new GoogleGenerativeAI(apiKey);
 
 export interface RecommendedProduct {
