@@ -57,7 +57,7 @@ PERGUNTA DO CLIENTE: "${query}"
 
 Responda de forma natural e elegante, incluindo o [ID:xxx] de cada produto sugerido no texto.`;
 
-  const modelsToTry = ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-pro"];
+  const modelsToTry = ["gemini-3.0-flash", "gemini-2.5-flash", "gemini-1.5-flash", "gemini-1.5-pro", "gemini-pro"];
   let text = "";
   let success = false;
 
