@@ -58,7 +58,7 @@ PERGUNTA DO CLIENTE: "${query}"
 Responda de forma natural e elegante, incluindo o [ID:xxx] de cada produto sugerido no texto.`;
 
   try {
-    const model = ai.getGenerativeModel({ model: "gemini-1.5-flash" }, { apiVersion: "v1" });
+    const model = ai.getGenerativeModel({ model: "gemini-pro" });
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const text = response.text();
